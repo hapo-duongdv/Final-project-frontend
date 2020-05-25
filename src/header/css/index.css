@@ -1,0 +1,57 @@
+
+
+.header {
+    font-family: 'Roboto';
+    height: 120px;
+}
+
+.appWrapper-Layout-container {
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+.appWrapper-Layout-rightPanel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+}
+
+.logo {
+    width: 50%;
+}
+
+.icon-Layout-rigtPanel {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.search-box {
+    display: flex;
+    width: 650px;
+    border-radius: 10%;
+}
+
+.search-box input {
+    width: 500px;
+    height: 35px;
+    border-radius: 5px;
+    border: white;
+}
+
+.post {
+    width: 150px;
+    height: 35px;
+    border-radius: 5px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.post span {
+    color: white;
+}
