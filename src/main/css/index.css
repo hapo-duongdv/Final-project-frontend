@@ -1,6 +1,68 @@
-.main {
+.main-container {
     margin-right: 20%;
     margin-left: 20%;
     font-size: 12px;
     font-weight: 400;
+    margin-top: 10px;
 }
+
+.main {
+    background-color: rgb(244, 244, 244);
+}
+
+.list-item-category {
+    height: 120px;
+    margin-right: 8px;
+    margin-top: 5px;
+    border-radius: 3px;
+    margin-left: 8px;
+}
+
+.image {
+    background-image: url("../images/149213784683955-f8_07.jpg");
+    background-position: center;
+}
+
+.image-2 {
+    background-image: url("../images/mua-ban-thanh-ly-thiet-bi-dien-tu-dien-gia-dung-gia-re-tphcm-nguonthanhly.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.image-3 {
+    background-image: url("../images/13-ly-do-nen-tu-choi-thuc-an-nhanh-1-1562631798-372-width500height329.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.image-4 {
+    background-image: url("../images/đồ-dùng-mang-theo-cắm-trại.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.image-5 {
+    background-image: url("../images/ban-ghe-go-bv.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.image-6 {
+    background-image: url("../images/shop-ban-thoi-trang-nam-cong-so.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.image-7 {
+    background-image: url("../images/Top-9-Cửa-hàng-bán-dụng-cụ-thể-thao-uy-tín-nhất-ở-Hà-Nội.png");
+    background-position: center;
+    background-size: cover;
+    
+}
+
+.image-8 {
+    background-image: url("../images/37320887-70cba60a-26a8-11e8-82b4-cc0048d32c89.jpg");
+    background-position: center;
+    background-size: cover;
+}
+

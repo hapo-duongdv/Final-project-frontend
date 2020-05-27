@@ -21,9 +21,9 @@ export default class Footer extends Component {
                 </ul>
                 <ul style={{listStyle:"none"}}>
                     <li style={{fontWeight:"bold"}}>LIÊN KẾT</li>
-                    <li><img src="https://static.chotot.com/storage/default/facebook.svg"/></li>
-                    <li><img src="https://static.chotot.com/storage/default/youtube.svg"/></li>
-                    <li><img src="https://static.chotot.com/storage/default/google.svg"/></li>
+                    <span ><img style={{marginTop:"8px"}} src="https://static.chotot.com/storage/default/facebook.svg"/></span>
+                    <span style={{marginLeft:"15px", marginTop:"10px"}}><img src="https://static.chotot.com/storage/default/youtube.svg"/></span>
+                    <span style={{marginLeft:"15px", marginTop:"10px"}}><img src="https://static.chotot.com/storage/default/google.svg"/></span>
                 </ul>
             </footer>
         )

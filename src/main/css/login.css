@@ -43,6 +43,10 @@
     line-height: 5px;
 }
 
+.btn-login:hover {
+    background-color: #ed7f03;
+}
+
 
 .btn-forgotPassword {
     margin-left: 20px;
@@ -56,5 +60,44 @@
     color: black;
     font-size: 12px;
     line-height: 5px;
+    font-weight: 400;
 }
+
+.btn-forgotPassword:hover {
+    background-color: #d2d2d2;
+}
+
+.list-btn {
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 260px;
+    justify-content: space-between;
+}
+
+.btn-register:hover {
+    background-color: #449d44;
+}
+
+.btn-register {
+    width: 175px;
+    margin-left: 10px;
+    border-radius: 5px;
+    background-color: #5cb85c;
+    border: #449d44;
+    color: #fff;
+}
+
+.btn-login-fb {
+    width: 175px;
+    border-radius: 5px;
+    background-color: #385794;
+    border: #385794;
+    color: #fff;
+}
+
+.btn-login-fb:hover{
+    background-color:#2a416f
+}
+
+
 
