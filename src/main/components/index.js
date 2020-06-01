@@ -7,8 +7,8 @@ export default class Main extends Component {
         return (
             <main className="main">
                 <div className="main-container">
-                    <div className="list-category">
-                        <p style={{ fontSize: "15px", fontWeight: "bold", paddingTop:"5px" }}>Khám phá danh mục</p>
+                    <div className="list-category pt-3">
+                        <a href='/filter' style={{ fontSize: "15px", fontWeight: "bold" ,textDecoration:"none" }}>Khám phá danh mục</a>
                         <div className="container" style={{backgroundColor:"white"}}>
                             <div className="row">
                                 <div className="col-4 list-item-category image"><p style={{ marginTop: "90px", fontSize: "12px", fontWeight: "bold", color: "white" }}>Xe cộ</p></div>

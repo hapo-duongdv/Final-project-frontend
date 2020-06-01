@@ -4,15 +4,26 @@ import { follow, unfollow } from './follow';
 import CmtForm from '../posts/commentForm';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios'
+import axios from 'axios';
+import ModalShow from './show'
 
 export default class PostItem extends Component {
     state = {
         liked: false,
         numberOfLike: 0,
         comments: [],
-        currentUser: []
+        currentUser: [],
+        modalShowVisible: false
+     
     }
+
+    toggleShowModalVisible = () => {
+        this.setState({
+            modalShowVisible: !this.state.modalShowVisible
+        });
+    };  
+
+
     like = async () => {
         // const { post, authedUser } = this.props;
         // const res = await axios.post(`http://localhost:5000/post/${post.id}/like`, {
@@ -92,7 +103,7 @@ export default class PostItem extends Component {
         const post = this.props.post;
         return (
             <div className="col-md-4" style={{ marginTop: 10, marginBottom: 10 }}>
-                <Card>
+                <Card >
                     <CardBody>
                         <CardTitle className="mb-2">
                             {post.author.email}
@@ -113,6 +124,15 @@ export default class PostItem extends Component {
                         <CmtForm onSubmit={this.comment} />
                     </CardBody>
                 </Card>
+                <ModalShow
+                    visible={this.state.modalShowVisible}
+                    onToggle={this.toggleShowModalVisible}
+                    post={this.props.post}
+                    onFollow={this.props.onFollow}
+                    onUnfollow={this.props.onUnfollow}
+                    authedUser={this.props.authedUser}
+                    isFollowing= {this.props.isFollowing}
+                ></ModalShow>
             </div>
         )
     }

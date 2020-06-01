@@ -7,6 +7,9 @@ import Login from './main/components/login';
 import CreatePost from './main/components/posts/newPost'
 import axios from 'axios';
 import Filter from './main/components/posts/filter';
+import Register from './main/components/register';
+import Profile from './main/components/profile';
+import Chat from './chat/components/index';
 
 class App extends React.Component {
   state = {
@@ -66,7 +69,7 @@ class App extends React.Component {
     axios.defaults.headers.common["Authorization"] = `Bearer ${user.data.token}`
     this.setState({
       authedUser: user.data,
-      roles: user.data.roles, 
+      roles: user.data.roles,
       list_following: user.data.listFollow
     })
   }
@@ -92,7 +95,7 @@ class App extends React.Component {
 
 
   render() {
-    console.log(this.state.list_following)
+    // console.log(this.state.list_following)
     return (
       <>
         <Router>
@@ -101,6 +104,9 @@ class App extends React.Component {
             <Main />
           } />
           <Route path="/new-post" component={CreatePost} />
+          <Route path="/register" component={Register} />
+          <Route path="/chat" component={Chat} />
+          <Route path="/profile" render={() => <Profile authedUser={this.state.authedUser} />} />
           <Route path="/login" render={() => <Login onLogin={this.login} />} />
           <Route path="/filter" render={() => <Filter authedUser={this.state.authedUser} listFollowing={this.state.list_following} onFollow={this.follow} onUnfollow={this.unfollow} />} />
           <Footer />

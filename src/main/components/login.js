@@ -50,7 +50,7 @@ export default class Login extends Component {
     }
 
     render() {
-        console.log(this.props)
+        // console.log(this.props)
         return (
             <div className="login">
                 <p style={{ textAlign: "center", marginTop: "30px", fontSize:"25px", fontWeight:"bold" }}>Đăng nhập</p>
@@ -91,7 +91,7 @@ export default class Login extends Component {
                             Đăng nhập bằng   <img src="https://static.chotot.com/storage/SSO_CDN_STAGING/dist/fb.svg" />
                         </Button>
                     </div>
-                    <div><Button className="btn-register" color="success">Đăng kí</Button></div>
+                    <div><Button href="/register" className="btn-register" color="success">Đăng kí</Button></div>
                 </div>
 
             </div>

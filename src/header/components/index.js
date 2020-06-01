@@ -24,7 +24,7 @@ class Header extends Component {
                         </div>
                         <div className="icon-Layout-rigtPanel">
                             <FontAwesomeIcon icon={faComment} />
-                            <a href="/" style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>Chat</a>
+                            <a href="/chat" style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>Chat</a>
                         </div>
                         <div className="icon-Layout-rigtPanel">
                             <FontAwesomeIcon icon={faBell} />
@@ -42,17 +42,18 @@ class Header extends Component {
                         <Button style={{ marginLeft: "-40px", backgroundColor: "white", border: "white" }} ><FontAwesomeIcon icon={faSearch} /></Button>
                     </div>
                     <div className="login-modal">
-                        <FontAwesomeIcon icon={faUserCircle}  />
+                        <FontAwesomeIcon icon={faUserCircle} />
                         {!this.props.isAuthed ? <>
                             <a href="/login" style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>Đăng nhập</a>
                         </> : <>
-                        <a href="#" onClick={this.props.logout} style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>{this.props.authedUser.username}</a>
+                                <a href="/profile" style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>{this.props.authedUser.username}</a>
+                                <a href="#" onClick={this.props.logout} style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>/ Log out</a>
                             </>}
 
                     </div>
                     <div className="post" style={{ backgroundColor: "#fc9807", marginLeft: "auto" }}>
-                        <a href="/new-post" style={{textDecoration:"none"}}>
-                            <FontAwesomeIcon icon={faCartPlus} style={{color:"white"}} />
+                        <a href="/new-post" style={{ textDecoration: "none" }}>
+                            <FontAwesomeIcon icon={faCartPlus} style={{ color: "white" }} />
                             <span style={{ marginLeft: "15px", fontWeight: "bold" }}>ĐĂNG TIN</span>
                         </a>
                     </div>
