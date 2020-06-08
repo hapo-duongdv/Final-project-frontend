@@ -5,12 +5,13 @@ import { Button, Modal, ModalBody, ModalHeader, Form, FormGroup, Label, Input, M
 import "../../css/filter.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { faWindowClose } from '@fortawesome/free-regular-svg-icons';
 
 export default class Filter extends Component {
     state = {
         posts: [],
         filterCategory: "",
-        filterProvince: "",
+        filterAddress: "",
         isOnClick: false,
         ModalCategoryVisible: false,
         ModalCategoryProductVisible: false,
@@ -36,11 +37,37 @@ export default class Filter extends Component {
 
     }
 
+    unFilter = () => {
+        this.setState({
+            filterCategory: "",
+            filterAddress: ""
+        })
+        window.location.href = "/filter"
+    }
+
     filter = (val) => {
         this.setState({
-            categoryValue: val
+            filterCategory: val,
+            ModalCategoryProductVisible: !this.state.ModalCategoryProductVisible
         })
     }
+
+    checkFilter = (item) => {
+        if (this.state.filterCategory || this.state.filterAddress) {
+            return (item.props.post.category === this.state.filterCategory || item.props.post.address === this.state.filterAddress)
+        } else if (this.state.filterCategory && this.state.filterAddress) {
+            return item.props.post.address === this.state.filterAddress && item.props.post.category === this.state.filterCategory
+        }
+    }
+
+    filterAddress = (val) => {
+        this.setState({
+            filterAddress: val,
+            ModalCategoryVisible: !this.state.ModalCategoryVisible
+        })
+    }
+
+
 
     componentDidMount() {
         const token = localStorage.getItem("jwt_token");
@@ -57,29 +84,41 @@ export default class Filter extends Component {
 
     }
     render() {
+        console.log(this.props)
         return (
 
             <div className="filter" style={{ marginLeft: "25%", marginRight: "25%", marginTop: "20px" }}>
-                <div className="filter-address">
+                <div className="filter-address p-3">
                     <div className="container">
                         <div className="row">
-                            <div className="col-6" style={{ border: "0.2px solid black" }}>
-                                {/* <select id="pet-select" className="ml-1" onChange={this.filter} value={this.state.filterCategory}>
-                                    <option value="">--Please choose an option--</option>
-                                    <option value="Đồ điện tử">Đồ điện tử</option>
-                                    <option value="Thời trang">Thời trang</option>
-                                    <option value="Đồ dùng cá nhân">Đồ dùng cá nhân</option>
-                                    <option value="new">Thời trang</option>
-                                    <option value="new">Thời trang</option>
-                                </select> */}
+                            <div className="col-4" style={{ border: "0.2px solid black", borderRadius: "5px", backgroundColor: "white", marginRight: "5px" }}>
                                 <a onClick={this.toggleFilterProductModalVisible} style={{ marginTop: "5px" }}>Phân loại sản phẩm <FontAwesomeIcon color="grey" style={{ float: "right", marginTop: "10px" }} icon={faAngleDown} /></a>
                             </div>
-                            <div className="col-4" style={{ border: "0.2px solid black" }}>
+                            <div className="col-4" style={{ border: "0.2px solid black", backgroundColor: "white", borderRadius: "5px" }}>
                                 <a onClick={this.toggleFilterModalVisible} style={{ marginTop: "5px" }}>Tỉnh/Thành phố <FontAwesomeIcon color="grey" style={{ float: "right", marginTop: "10px" }} icon={faAngleDown} /></a>
                             </div>
                             <div className="col-2">
-                                <Button color="primary" onClick={this.clicked}>Lọc</Button>
+                                {!this.state.isOnClick ? <>
+                                    <Button color="primary" onClick={this.clicked}>Lọc</Button>
+                                </> : <>
+                                        {/* <Button color="primary" onClick={this.clicked}>Lọc</Button> */}
+                                        <Button color="danger" onClick={this.unFilter}>Bỏ Lọc</Button>
+                                    </>
+                                }
+
                             </div>
+                            {this.state.filterCategory &&
+                                <div className="d-flex" style={{ height: "30px", width: "110px", justifyContent: "center" }}>
+                                    <FontAwesomeIcon color="red" style={{ float: "right", marginRight: "3px", marginTop: "5px" }} icon={faWindowClose} />
+                                    <p style={{ fontSize: "15px", marginTop: "2px", color: "red" }} >{this.state.filterCategory}</p>
+                                </div>
+                            }
+                            {this.state.filterAddress &&
+                                <div className="d-flex" style={{ height: "30px", width: "110px", justifyContent: "center" }}>
+                                    <FontAwesomeIcon color="red" style={{ float: "right", marginRight: "3px", marginTop: "5px" }} icon={faWindowClose} />
+                                    <p style={{ fontSize: "15px", marginTop: "2px", color: "red" }} >{this.state.filterAddress}</p>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -89,18 +128,33 @@ export default class Filter extends Component {
                             <div className="row">
                                 <br></br>
                                 {this.state.posts.map(post =>
-                                    <PostItem key={post.id} post={post} onFollow={this.props.onFollow} onUnfollow={this.props.onUnfollow} authedUser={this.props.authedUser} />
-                                ).filter(item => item.props.post.category === this.state.filterCategory)
-
+                                    <PostItem
+                                        key={post.id}
+                                        post={post}
+                                        isFollowing={this.props.listFollowing.indexOf(post.email) > -1}
+                                        isFollowPost={this.props.listFollowingPost.indexOf(post.title > -1)}
+                                        onFollow={this.props.onFollow}
+                                        onFollowPost={this.props.onFollowPost}
+                                        onUnfollow={this.props.onUnfollow}
+                                        authedUser={this.props.authedUser} />
+                                ).filter(item => this.checkFilter(item))
                                 }
                             </div>
                         </> : <>
                             <div className="row">
                                 <br></br>
                                 {this.state.posts.map(post =>
-                                    <PostItem key={post.id} post={post} onFollow={this.props.onFollow} onUnfollow={this.props.onUnfollow} authedUser={this.props.authedUser} />
+                                    <PostItem
+                                        key={post.id}
+                                        post={post}
+                                        onFollow={this.props.onFollow}
+                                        onUnfollow={this.props.onUnfollow}
+                                        onFollowPost={this.props.onFollowPost}
+                                        authedUser={this.props.authedUser}
+                                        isFollowing={this.props.listFollowing.indexOf(post.email) > -1}
+                                        isFollowPost={this.props.listFollowingPost.indexOf(post.title > -1)}
+                                    />
                                 )
-
                                 }
                             </div>
                         </>
@@ -111,19 +165,37 @@ export default class Filter extends Component {
                     className={this.props.className}>
                     <ModalHeader toggle={this.toggle}>Phân loại sản phẩm</ModalHeader>
                     <ModalBody>
-                        <ul value={this.state.filterCategory} >
-                            <li>
-                                <NavLink onClick={this.filter.bind(this, "Đồ điện tử")}>Đồ điện tử <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                        <ul value={this.state.filterCategory} style={{ maxHeight: "400px", overflowY: "scroll" }} className="ul" >
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Đồ điện tử")}>Đồ điện tử <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
-                            <li>
-                                <NavLink onClick={this.filter.bind(this, "Thời trang")}>Thời trang <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Thời trang")}>Thời trang <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
-                            <li>Đồ dùng cá nhân <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
-                            <li>Đồ gia dụng, nội thất <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
-                            <li>Dụng cụ thể thao <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
-                            <li>Đồ dùng văn phòng <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
-                            <li>Đồ ăn, thực phẩm <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
-                            <li>Xe cộ <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Xe cộ")}>Xe cộ <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Đồ ăn, thực phẩm")}>Đồ ăn <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Đồ dùng cá nhân")}>Đồ dùng cá nhân <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Đồ gia dụng, nội thất")}>Đồ gia dụng, nội thất <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li >
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Đồ dùng văn phòng")}>Đồ dùng văn phòng <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li >
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Dụng cụ thể thao, giải trí")}>Dụng cụ thể thao, giải trí <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li >
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Sách")}>Sách <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Khác")}>Khác <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li >
                         </ul>
                     </ModalBody>
                     <ModalFooter>
@@ -136,16 +208,55 @@ export default class Filter extends Component {
                     className={this.props.className}>
                     <ModalHeader toggle={this.toggle}>Phân loại</ModalHeader>
                     <ModalBody>
-                        <ul>
-                            <li>Hà Nội <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
-                            <li>Hải Phòng <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
-                            <li>Hải Dương <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
-                            <li>Hưng Yên <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
-                            <li>Bắc Ninh <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
-                            <li>Thái Nguyên <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
-                            <li>Vĩnh Phúc <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
-                            <li>Phú Thọ <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
-                            <li>Quảng Ninh <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></li>
+                        <ul value={this.state.filterAddress} style={{ maxHeight: "400px", overflowY: "scroll" }} className="ul">
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hà Nội")}>Hà Nội <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hồ Chí Minh")}>Hồ Chí Minh <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Cần Thơ")}>Cần Thơ <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Đà Nẵng")}>Đà Nẵng <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hải Dương")}>Hải Dương <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li >
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hải Phòng")}>Hải Phòng <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hưng Yên")}>Hưng Yên <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Quảng Ninh")}>Quảng Ninh <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hà Nam")}>Hà Nam <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Thừa Thiên Huế")}>Thừa Thiên Huế <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Nam Định")}>Nam Định <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Nghệ An")}>Nghệ An <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Ninh Bình")}>Ninh Bình <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Thái Nguyên")}>Thái Nguyên <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Phú Thọ")}>Phú Thọ <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
+                            <li className="li">
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Khác")}>Khác <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                            </li>
                         </ul>
                     </ModalBody>
                     <ModalFooter>

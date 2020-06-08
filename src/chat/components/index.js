@@ -7,6 +7,7 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import '../css/chat.css';
 import { Button, InputGroup } from 'reactstrap';
+import InputUser from './inputUser'
 
 export default class Chat extends React.Component {
     constructor(props) {
@@ -40,34 +41,36 @@ export default class Chat extends React.Component {
         this.socket.on('connection', (data) => {
             console.log(data)
         })
-        this.socket.on('newMessage', (response) => { this.newMessage(response) }); //lắng nghe khi có tin nhắn mới
+        this.socket.on('newMessage', (response) => {   //lắng nghe khi có tin nhắn mới  
+            this.newMessage(response)
+        });
         this.socket.on('updateUesrList', (response) => { this.setState({ userOnline: response }) }); //update lại danh sách người dùng online khi có người đăng nhập hoặc đăng xuất
-        this.socket.on('user-connected', (res) => { alert(`${res.user} connected`) }); //lắng nghe khi có tin nhắn mới
+        this.socket.on('user-connected', (res) => { alert(`${res.user} connected!`) });
+        this.socket.on('user-disconnected', (res) => { alert(`${res.user} disconnected!`) });
     }
-    newUser() {
-        var name = prompt("Who are you?");
-        console.log(name)
-        if (name) {
-            this.socket.emit('new-user', { user: name })
-            // e.value = "";
+    newUser(e) {
+        if (e) {
+            this.socket.emit('new-user', { user: e.value })
+            e.value = "";
         }
     }
 
-
-
     //Khi có tin nhắn mới, sẽ push tin nhắn vào state mesgages, và nó sẽ được render ra màn hình
     newMessage(m) {
-
+        // console.log(m.data)
         const messages = this.state.messages;
         let ids = _map(messages, 'id');
         let max = Math.max(...ids);
         if (m) {
-            messages.push({
-                id: max + 1,
-                userId: m.id,
-                message: m.user.data,
-                userName: m.username
-            });
+            {
+                messages.push({
+                    id: max + 1,
+                    userId: m.id,
+                    message: m.user.user + " : " + m.message,
+                    userName: m.userName
+                });
+            }
+
         }
         console.log(this.state.messages)
         let objMessage = $('.messages');
@@ -85,7 +88,7 @@ export default class Chat extends React.Component {
     //Gửi event socket newMessage với dữ liệu là nội dung tin nhắn và người gửi
     sendnewMessage(m) {
         if (m.value) {
-            this.socket.emit("sendMessage", { data: m.value, user: m.user }); //gửi event về server
+            this.socket.emit("sendMessage", m.value); //gửi event về server
             m.value = "";
         }
     }
@@ -94,11 +97,12 @@ export default class Chat extends React.Component {
     render() {
         return (
             <div className="app__content" style={{ height: "600px" }}>
-                <Button onClick={this.newUser}>Nhập tên</Button>
+                <InputUser sendUser={this.newUser.bind(this)} />
                 {/* <Input sendMessage={this.newUser.bind(this)} /> */}
                 {/* kiểm tra xem user đã tồn tại hay chưa, nếu tồn tại thì render form chat, chưa thì render form login */}
                 {this.state.user.id && this.state.user.username ?
                     <div className="chat_window" style={{ marginTop: "50px" }}>
+                        {/* <Button onClick={this.newUser}>Nhập tên</Button> */}
                         {/* danh sách user online */}
                         <div className="menu">
 
@@ -113,8 +117,8 @@ export default class Chat extends React.Component {
                         {/* danh sách message */}
                         <div className="content">
                             <Messages user={this.state.user} messages={this.state.messages} typing={this.state.typing} />
-                            {/* <Input sendMessage={this.sendnewMessage.bind(this)} /> */}
-                            <Input sendUser={this.newUser.bind(this)} />
+                            <Input sendMessage={this.sendnewMessage.bind(this)} />
+
                         </div>
 
                     </div>

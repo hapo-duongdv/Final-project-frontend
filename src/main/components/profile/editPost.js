@@ -9,13 +9,16 @@ export default class EditPost extends Component {
         this.onStatusOnChange = this.onStatusOnChange.bind(this);
         this.onDescriptionOnChange = this.onDescriptionOnChange.bind(this);
         this.onCostOnChange = this.onCostOnChange.bind(this);
+        this.imageOnChange = this.imageOnChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
             title: "",
             status: "",
             description: "",
-            cost: ""
+            cost: "",
+            address: "",
+            imgFile: null,
         }
     }
 
@@ -28,6 +31,18 @@ export default class EditPost extends Component {
     onStatusOnChange = (event) => {
         this.setState({
             status: event.target.value
+        })
+    }
+
+    imageOnChange = event => {
+        this.setState({
+            imgFile: event.target.files[0]
+        });
+    };
+
+    onAddressOnChange = (event) => {
+        this.setState({
+            address: event.target.value
         })
     }
 
@@ -52,25 +67,38 @@ export default class EditPost extends Component {
     async onSubmit(e) {
         e.preventDefault();
         this.toggleLoading();
-        const obj = {
-            name: this.state.name,
-            email: this.state.email,
-            phone: this.state.phone,
-            address: this.state.address,
-        };
-        const token = localStorage.getItem("jwt_token");
-        const AuthStr = 'Bearer ' + token;
-        const response = await axios.put('http://localhost:4000/posts/' + this.props.post.id, obj,
-            { headers: { 'Authorization': AuthStr } }
-        )
-        if (response.status === 200) {
-            this.reset();
-            alert("Post updated!")
+        try {
+            var bodyFormData = new FormData();
+            bodyFormData.append('image', this.state.imgFile);
+            const image = await axios({
+                method: 'post',
+                url: 'http://localhost:4000/posts/',
+                data: bodyFormData,
+                headers: { 'Content-Type': 'multipart/form-data' }
+            })
+            const obj = {
+                title: this.state.title,
+                status: this.state.status,
+                description: this.state.description,
+                cost: this.state.cost,
+                address: this.state.address,
+                imgUrl: image.data.filename,
+            };
+            const token = localStorage.getItem("jwt_token");
+            const AuthStr = 'Bearer ' + token;
+            const response = await axios.put('http://localhost:4000/posts/' + this.props.post.id, obj,
+                { headers: { 'Authorization': AuthStr } }
+            )
+            if (response.status === 200) {
+                this.reset();
+                alert("Post updated!")
+            }
+        } catch (err) {
+            alert(err)
         }
-        else {
-            alert("Failed to update")
-        }
+
         this.toggleLoading();
+        window.location.href = "profile"
     }
 
     reset = () => {
@@ -79,6 +107,7 @@ export default class EditPost extends Component {
             description: "",
             status: "",
             cost: "",
+            imgFile: null
         })
     }
 
@@ -88,13 +117,14 @@ export default class EditPost extends Component {
             description: this.props.post.description,
             status: this.props.post.status,
             cost: this.props.post.cost,
+            address: this.props.post.address
         })
     }
 
     render() {
-        console.log(this.props)
+        // console.log(this.props.post)
         return (
-       
+
             <Modal
                 isOpen={this.props.visible}
                 className={this.props.className}>
@@ -136,6 +166,30 @@ export default class EditPost extends Component {
                                 placeholder="number...."
                                 value={this.state.cost}
                                 onChange={this.onCostOnChange} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="examplePhone">Địa chỉ</Label>
+                            <Input type="text"
+                                name="phone"
+                                placeholder="address...."
+                                value={this.state.address}
+                                onChange={this.onAddressOnChange} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Input
+                                type="file"
+                                name="file"
+                                id="exampleFile"
+                                accept=".png, .jpg"
+                                onChange={this.imageOnChange}
+                            />
+                            {this.state.imgFile && (
+                                <img
+                                    src={URL.createObjectURL(this.state.imgFile)}
+                                    alt=""
+                                    style={{ height: 200 }}
+                                />
+                            )}
                         </FormGroup>
                         <Button disabled={this.state.loading} outline color="secondary" className="float-right" onClick={this.props.onToggle}>CANCEL</Button>
                         <Button disabled={this.state.loading} outline color="warning" className="float-right" type="reset">RESET</Button>

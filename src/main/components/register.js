@@ -6,49 +6,51 @@ import '../css/newPost.css'
 
 export default class Register extends Component {
     state = {
-        title: "",
-        description: "",
-        status: "",
-        cost: "",
-        author: "",
-        category: "",
+        name: "",
+        username: "",
+        password: "",
+        address: "",
+        email: "",
+        phone: "",
+        listFollow: "",
+        roles: "user",
         agreeRoles: false,
-        imgFile: null,
+        avatar:""
     }
 
-    onTitleOnChange = (event) => {
+    onNameOnChange = (event) => {
         this.setState({
-            title: event.target.value
+            name: event.target.value
         })
     }
 
-    imageOnChange = event => {
+    onUsernameOnChange = (event) => {
         this.setState({
-            imgFile: event.target.files[0]
-        });
-    };
-
-    onDescriptionOnChange = (event) => {
-        this.setState({
-            description: event.target.value
+            username: event.target.value
         })
     }
 
-    onCategoryOnChange = (event) => {
+    onPasswordOnChange = (event) => {
         this.setState({
-            category: event.target.value
+            password: event.target.value
         })
     }
 
-    onStatusOnChange = (event) => {
+    onAddressOnChange = (event) => {
         this.setState({
-            status: event.target.value
+            address: event.target.value
         })
     }
 
-    onCostOnChange = (event) => {
+    onEmailOnChange = (event) => {
         this.setState({
-            cost: event.target.value
+            email: event.target.value
+        })
+    }
+
+    onPhoneOnChange = (event) => {
+        this.setState({
+            phone: event.target.value
         })
     }
 
@@ -66,141 +68,99 @@ export default class Register extends Component {
 
     reset = () => {
         this.setState({
-            title: "",
-            description: "",
-            status: "",
-            cost: "",
-            catgegory: ""
+            name: "",
+            username: "",
+            password: "",
+            email: "",
+            phone: "",
+            address: ""
         })
     }
 
     createPost = async event => {
         event.preventDefault();
         this.toggleLoading();
-        // const imageName = this.state.imgFile.name;
-        var bodyFormData = new FormData();
-        bodyFormData.append('image', this.state.imgFile);
-        const image = await axios({
-            method: 'post',
-            url: 'http://localhost:4000/posts/',
-            data: bodyFormData,
-            headers: { 'Content-Type': 'multipart/form-data' }
-        })
-        if(image.status === 201) {
-            console.log("done")
+        const user = {
+            name: this.state.name,
+            username: this.state.username,
+            password: this.state.password,
+            address: this.state.address,
+            email: this.state.email,
+            phone: this.state.phone,
+            roles: this.state.roles,
+            avatar: this.state.avatar
         }
-        console.log("urlimage", this.state.imgFile)
-        const post = {
-            title: this.state.title,
-            description: this.state.description,
-            status: this.state.status,
-            cost: this.state.cost,
-            category: this.state.category,
-            imgUrl: image.data.filename
+        try {
+            const response = await axios.post("http://localhost:4000/users/create", user);
+            if (response.status === 201) {
+                this.reset();
+                alert("Successfully!")
+                window.location.href = "login"
+            }
+
+        } catch (err) {
+            alert(err)
         }
-        const token = localStorage.getItem("jwt_token");
-        const AuthStr = 'Bearer ' + token;
-        const response = await axios.post("http://localhost:4000/posts/create", post,
-            { headers: { 'Authorization': AuthStr } }
-        );
-        // console.log("res: ", response.data)
-        if (response.status === 201) {
-            this.reset();
-            alert("created!")
-        }
-        else {
-            alert("Failed to create")
-        }
+
         this.toggleLoading();
     }
 
     render() {
-        // console.log(this.state.imgFile.name);
         return (
             <div className="mx-auto mt-2 new-post" style={{ width: "400px" }}>
                 <div className="container">
                     <h3 className="pb-20 pt-30">Register</h3>
                     <Form onSubmit={this.createPost} onReset={this.reset}>
-                    <FormGroup>
+                        <FormGroup>
                             <Label for="exampleName">Họ tên</Label>
                             <Input type="text"
+                                required
                                 name="name"
                                 placeholder="name..."
-                                value={this.state.title}
-                                onChange={this.onTitleOnChange} />
+                                value={this.state.name}
+                                onChange={this.onNameOnChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="exampleName">Tài khoản</Label>
                             <Input type="text"
+                                required
                                 name="name"
                                 placeholder="username..."
-                                value={this.state.title}
-                                onChange={this.onTitleOnChange} />
+                                value={this.state.username}
+                                onChange={this.onUsernameOnChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="exampleName">Mật khẩu</Label>
                             <Input type="password"
+                                required
                                 name="name"
                                 placeholder="password..."
-                                value={this.state.title}
-                                onChange={this.onTitleOnChange} />
+                                value={this.state.password}
+                                onChange={this.onPasswordOnChange} />
                         </FormGroup>
-                        {/* <FormGroup>
-                            <Label for="exampleSelect">Phân loại</Label>
-                            <Input type="select"
-                                name="select"
-                                id="exampleSelect"
-                                value={this.state.category}
-                                onChange={this.onCategoryOnChange}>
-                                <option value="">--Please choose an option--</option>
-                                <option>Xe cộ</option>
-                                <option>Đồ điện tử</option>
-                                <option>Thời trang</option>
-                                <option>Đồ gia dụng, nội thất</option>
-                                <option>Dụng cụ thể thao</option>
-                                <option>Đồ ăn, thực phẩm</option>
-                                <option>Đồ dùng cá nhân</option>
-                                <option>Đồ văn phòng, công sở</option>
-                            </Input>
-                        </FormGroup> */}
                         <FormGroup>
                             <Label for="exampleDescription">Email</Label>
-                            <Input type="text" name="description" placeholder="email..." value={this.state.description}
-                                onChange={this.onDescriptionOnChange} />
+                            <Input type="email" required name="description" placeholder="email..." value={this.state.email}
+                                onChange={this.onEmailOnChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="exampleDescription">Địa chỉ</Label>
-                            <Input type="text" name="description" placeholder="address..." value={this.state.cost}
-                                onChange={this.onCostOnChange} />
+                            <Input type="text" required name="description" placeholder="address..." value={this.state.address}
+                                onChange={this.onAddressOnChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="exampleStatus">Số điện thoại</Label>
-                            <Input type="text" name="status" placeholder="phone...." value={this.state.status}
-                                onChange={this.onStatusOnChange} />
+                            <Input type="text" required name="status" placeholder="phone...." value={this.state.phone}
+                                onChange={this.onPhoneOnChange} />
                         </FormGroup>
                         <FormGroup check>
                             <Input type="checkbox"
+                                required
                                 name="check"
                                 id="exampleCheck"
                                 value={this.state.agreeRoles}
                                 onChange={this.onAgreeRolesOnChange} />
                             <Label for="exampleCheck" check>Tôi đồng ý với điều khoản.</Label>
-                        </FormGroup>
-                        <FormGroup>
-                            <Input
-                                type="file"
-                                name="file"
-                                id="exampleFile"
-                                accept=".png, .jpg"
-                                onChange={this.imageOnChange}
-                            />
-                            {this.state.imgFile && (
-                                <img
-                                    src={URL.createObjectURL(this.state.imgFile)}
-                                    alt=""
-                                    style={{ height: 200 }}
-                                />
-                            )}
                         </FormGroup>
                         <Button disabled={this.state.loading} outline color="success" className="float-right" type="reset">RESET</Button>
                         <Button disabled={this.state.loading} outline color="primary" className="float-right" type="submit">REGISTER</Button>

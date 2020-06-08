@@ -1,12 +1,38 @@
 import React, { Component } from 'react';
-import { Input, Button } from 'reactstrap';
+import { Input, Button, Form } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHome, faSearch, faMehRollingEyes, faComment, faBell, faChevronCircleDown, faUserCircle, faCartPlus } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faCartPlus, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import '../css/index.css'
+import { withRouter } from 'react-router-dom';
+import { faListAlt , faBell, faArrowAltCircleDown, faBuilding, faComment } from '@fortawesome/free-regular-svg-icons';
 
+// library.add(fal);
 
 class Header extends Component {
+    state = {
+        search: ""
+    }
+
+    searchOnChange = (event) => {
+        this.setState({
+            search: event.target.value.substr(0, 20)
+        })
+    }
+
+    onSearch = (event) => {
+        event.preventDefault();
+        this.props.history.push(`/search?q=${this.state.search}`)
+    }
+
+    onLogout = (e) => {
+        // e.preventDefault();
+        this.props.logout()
+        alert("Logout");
+        window.location.href="/"
+    }
+
     render() {
+        // console.log(this.props)
         return (
             <header className="header" style={{ backgroundColor: "#ffba00" }}>
                 <div className="appWrapper-Layout-container">
@@ -15,11 +41,11 @@ class Header extends Component {
                     </div>
                     <div className="appWrapper-Layout-rightPanel">
                         <div className="icon-Layout-rigtPanel">
-                            <FontAwesomeIcon icon={faHome} />
+                            <FontAwesomeIcon icon={faBuilding} />
                             <a href="/" style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>Trang chủ</a>
                         </div>
                         <div className="icon-Layout-rigtPanel">
-                            <FontAwesomeIcon icon={faMehRollingEyes} />
+                            <FontAwesomeIcon icon={faListAlt} />
                             <a href="/" style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>Tôi bán</a>
                         </div>
                         <div className="icon-Layout-rigtPanel">
@@ -31,15 +57,17 @@ class Header extends Component {
                             <a href="/" style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>Thông báo</a>
                         </div>
                         <div className="icon-Layout-rigtPanel">
-                            <FontAwesomeIcon icon={faChevronCircleDown} />
+                            <FontAwesomeIcon icon={faArrowAltCircleDown} />
                             <a href="/" style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>Thêm</a>
                         </div>
                     </div>
                 </div>
                 <div className="appWrapper-Layout-container" style={{ paddingTop: "20px" }}>
                     <div className="search-box">
-                        <Input placeholder="  Tìm kiếm trên chợ tốt...." />
-                        <Button style={{ marginLeft: "-40px", backgroundColor: "white", border: "white" }} ><FontAwesomeIcon icon={faSearch} /></Button>
+                        <Form onSubmit={this.onSearch} style={{ display: "flex" }}>
+                            <Input value={this.state.search} onChange={this.searchOnChange} placeholder="  Tìm kiếm trên chợ tốt...." />
+                            <Button style={{ marginLeft: "-40px", backgroundColor: "white", border: "white" }} ><FontAwesomeIcon color="grey" icon={faSearch} /></Button>
+                        </Form>
                     </div>
                     <div className="login-modal">
                         <FontAwesomeIcon icon={faUserCircle} />
@@ -47,7 +75,7 @@ class Header extends Component {
                             <a href="/login" style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>Đăng nhập</a>
                         </> : <>
                                 <a href="/profile" style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>{this.props.authedUser.username}</a>
-                                <a href="#" onClick={this.props.logout} style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>/ Log out</a>
+                                <a href="#" onClick={this.onLogout} style={{ marginLeft: "5px", textDecoration: "none", color: " black" }}>/ Log out</a>
                             </>}
 
                     </div>
@@ -63,4 +91,4 @@ class Header extends Component {
     }
 }
 
-export default Header;
+export default withRouter(Header);

@@ -6,9 +6,11 @@ import {
     Label,
     Input
 } from "reactstrap";
-import '../css/login.css'
+import '../css/login.css';
+import { withRouter, Redirect } from 'react-router-dom';
 
-export default class Login extends Component {
+
+class Login extends Component {
 
     state = {
         username: "",
@@ -37,6 +39,7 @@ export default class Login extends Component {
             let response = await this.props.onLogin(payload);
             if (response.status === 201) {
                 alert("Login Succesful");
+                window.location.href="/"
             } else {
                 alert("Invalid username/password!");
             }
@@ -45,7 +48,8 @@ export default class Login extends Component {
         }
     }
 
-    onLogin = () => {
+    onLogin = (e) => {
+        e.preventDefault();
         this.login(this.state)
     }
 
@@ -53,8 +57,8 @@ export default class Login extends Component {
         // console.log(this.props)
         return (
             <div className="login">
-                <p style={{ textAlign: "center", marginTop: "30px", fontSize:"25px", fontWeight:"bold" }}>Đăng nhập</p>
-                <Form className="form-login">
+                <p style={{ textAlign: "center", marginTop: "30px", fontSize: "25px", fontWeight: "bold" }}>Đăng nhập</p>
+                <Form className="form-login" action="">
                     <FormGroup className>
                         <Label>Username</Label>
                         <br></br>
@@ -98,3 +102,5 @@ export default class Login extends Component {
         )
     }
 }
+
+export default withRouter(Login)

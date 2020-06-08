@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, BrowserRouter as Router, withRouter } from 'react-router-dom';
+import { Route, Switch, BrowserRouter as Router, withRouter, Redirect } from 'react-router-dom';
 import Header from './header/components/index';
 import Footer from './footer/components/index';
 import Main from './main/components/index';
@@ -10,13 +10,16 @@ import Filter from './main/components/posts/filter';
 import Register from './main/components/register';
 import Profile from './main/components/profile';
 import Chat from './chat/components/index';
+import Search from './header/components/searchUser';
+import ProfileUser from './main/components/profileUser/profileUser'
 
 class App extends React.Component {
   state = {
     clickLogin: false,
     authedUser: null,
     roles: null,
-    list_following: []
+    list_following: [],
+    list_followingPost: []
   }
 
   onClickLogin = () => {
@@ -28,6 +31,12 @@ class App extends React.Component {
   follow = (email) => {
     this.setState({
       list_following: [...this.state.list_following, email]
+    })
+  }
+
+  followPost = (post) => {
+    this.setState({
+      list_following: [...this.state.list_followingPost, post]
     })
   }
 
@@ -70,7 +79,7 @@ class App extends React.Component {
     this.setState({
       authedUser: user.data,
       roles: user.data.roles,
-      list_following: user.data.listFollow
+      list_following: user.data.listFollowers
     })
   }
 
@@ -95,23 +104,24 @@ class App extends React.Component {
 
 
   render() {
-    // console.log(this.state.list_following)
+    console.log(this.state.authedUser)
     return (
       <>
         <Router>
-          <Header authedUser={this.state.authedUser} isAuthed={this.state.authedUser !== null} logout={this.logout} />
+          <Header authedUser={this.state.authedUser} history = {this.props.history} isAuthed={this.state.authedUser !== null} logout={this.logout} />
           <Route exact path='/' render={() =>
             <Main />
           } />
           <Route path="/new-post" component={CreatePost} />
           <Route path="/register" component={Register} />
           <Route path="/chat" component={Chat} />
+          <Route path="/search" component={Search} />
           <Route path="/profile" render={() => <Profile authedUser={this.state.authedUser} />} />
+          <Route path="/profileUser" render={() => <ProfileUser authedUser={this.state.authedUser} />} />
           <Route path="/login" render={() => <Login onLogin={this.login} />} />
-          <Route path="/filter" render={() => <Filter authedUser={this.state.authedUser} listFollowing={this.state.list_following} onFollow={this.follow} onUnfollow={this.unfollow} />} />
+          <Route path="/filter" render={() => <Filter authedUser={this.state.authedUser} listFollowing={this.state.list_following} listFollowingPost ={this.state.list_followingPost} onFollow={this.follow} onUnfollow={this.unfollow} onFollowPost={this.followPost} />} />
           <Footer />
         </Router>
-
       </>
     );
   }

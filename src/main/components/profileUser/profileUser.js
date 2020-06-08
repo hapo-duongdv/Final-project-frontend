@@ -5,13 +5,14 @@ import '../../css/profile.css'
 import avatar from '../../images/avatar.jpg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelopeSquare, faPhone, faAddressCard, faCalendarDay, faCartPlus, faUserCircle } from '@fortawesome/free-solid-svg-icons';
-import Edit from './edit';
+import Edit from '../profile/edit';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
-import MyPost from './myPost';
+import MyPost from '../profile/myPost';
 import { Input } from 'reactstrap'
+import PostUser from './postUser';
 
-class Profile extends Component {
+class ProfileUser extends Component {
     state = {
         user: [],
         posts: [],
@@ -25,10 +26,12 @@ class Profile extends Component {
     }
 
     async componentDidMount() {
+        const id = queryString.parse(this.props.location.search).q;
         const token = localStorage.getItem("jwt_token");
         const AuthStr = 'Bearer ' + token;
-        const user = await axios.get(`http://localhost:4000/users/me/${token}`, { headers: { 'Authorization': AuthStr } })
-        const userCurrent = await axios.get(`http://localhost:4000/users/${user.data.id}`, { headers: { 'Authorization': AuthStr } })
+        // const user = await axios.get(`http://localhost:4000/users/me/${token}`, { headers: { 'Authorization': AuthStr } })
+        const userCurrent = await axios.get(`http://localhost:4000/users/${id}`, { headers: { 'Authorization': AuthStr } })
+        console.log(userCurrent)
         this.setState({
             user: userCurrent.data,
             posts: userCurrent.data.posts
@@ -36,9 +39,10 @@ class Profile extends Component {
     }
 
     render() {
-        console.log(this.state.user)
+        // console.log(queryString.parse(this.props.location.search).q)
         const query = queryString.parse(this.props.location.search).q;
-        var post = this.state.posts.filter(item => item.title === query);
+        // // var post = this.state.posts.filter(item => item.title === query);
+        console.log(this.state.posts)
         return (
             <div className="profile">
                 <p>>>Trang cá nhân của {this.state.user.name}</p>
@@ -56,7 +60,7 @@ class Profile extends Component {
                             <p style={{ fontSize: "20px", fontWeight: "bold" }}>{this.state.user.name}</p>
                             <span style={{ fontSize: "13px" }}><strong>0</strong> Người theo dõi</span>
                             <span style={{ fontSize: "13px", marginLeft: "12px" }}><strong>1</strong> Đang theo dõi</span>
-                            <button onClick={this.toggleModalEditVisible} style={{ borderRadius: "5px", marginTop: "10px", fontSize: "13px" }}>Chỉnh sửa thông tin cá nhân</button>
+                            {/* <button onClick={this.toggleModalEditVisible} style={{ borderRadius: "5px", marginTop: "10px", fontSize: "13px" }}>Chỉnh sửa thông tin cá nhân</button> */}
                         </div>
                     </div>
                     <div className="infor-right col-6 h-100 " style={{ borderRight: "0.1px solid white" }}>
@@ -91,32 +95,18 @@ class Profile extends Component {
                                             <span style={{ marginLeft: "15px", fontWeight: "bold" }}>ĐĂNG TIN</span>
                                         </a>
                                     </div></div>
-                            </> : <>{query ? <>
-                                {this.state.posts.filter(item => item.title === query).map((post, i) => {
-                                    return <>
-                                        <MyPost post={post} key={i} />
-                                    </>
-                                })}
                             </> : <>
                                     {this.state.posts.map((post, i) => {
-                                        return <MyPost author={this.state.user} post={post} key={i} />
+                                        return <PostUser author={this.state.user} post={post} key={i} />
                                     })}
-
-                                </>}
                                 </>
                             }
                         </div>
                     </div>
                 </div>
-                <Edit
-                    visible={this.state.modalEditVisible}
-                    onToggle={this.toggleModalEditVisible}
-                    key={this.state.user.id}
-                    user={this.state.user} />
-
             </div>
         )
     }
 }
 
-export default withRouter(Profile)
+export default withRouter(ProfileUser)

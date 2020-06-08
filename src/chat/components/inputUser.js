@@ -11,8 +11,8 @@ export default class Input extends React.Component {
     render () {
     
         return (
-           <div className="">
-               <div className="bottom_wrapper">
+           <div className="mt-5" >
+               {/* <div className="bottom_wrapper">
                    <div  className="message_input_wrapper">
                         <input ref="messageInput" type="text" className="message_input" placeholder="Type your message here" onKeyUp={this.checkEnter.bind(this)} />
                    </div>
@@ -20,8 +20,8 @@ export default class Input extends React.Component {
                         <div className='icon'></div>
                         <div className='text'>Send</div>
                    </div>                   
-               </div>
-               {/* <div className="bottom_wrapper">
+               </div> */}
+               <div className="bottom_wrapper" style={{marginTop:"30px", width:"25%", marginLeft:"75%"}}>
                    <div  className="message_input_wrapper">
                         <input ref="messageInput" type="text" className="message_input" placeholder="Type your message here" onKeyUp={this.checkEnter.bind(this)} />
                    </div>
@@ -29,7 +29,7 @@ export default class Input extends React.Component {
                         <div className='icon'></div>
                         <div className='text'>Send</div>
                    </div>                   
-               </div> */}
+               </div>
            </div>
         )
     }

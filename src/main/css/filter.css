@@ -1,8 +1,12 @@
-li {
+.li {
     list-style: none;
     border-bottom:  1px solid rgba(0, 0, 0, 0.1);
 }
 
-ul {
+.ul {
     padding-left: 0;
+}
+
+.li:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }

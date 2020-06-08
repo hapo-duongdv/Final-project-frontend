@@ -48,7 +48,7 @@ class ModalShow extends React.Component {
     }
 
     call = async () => {
-        return alert("Please call to: " + this.props.post.author.phone)
+        return alert("Please call to: " + this.props.author.phone)
     }
 
     render() {
@@ -75,7 +75,7 @@ class ModalShow extends React.Component {
                                         : <Button style={{ width: "55px", height: "30px", fontSize: "12px" }} outline color="primary" className=" pr-2" onClick={this.follow}>Follow</Button>
                                 }
                             </div>
-                            <CardText className="text-center mt-2 p-2" style={{ backgroundColor: "rgba(0,0,0,0.1)", height: "40px", fontSize: 15, border: "0.2px solid grey", borderRadius: "5px" }}>{post.author.email}</CardText>
+                            <CardText className="text-center mt-2 p-2" style={{ backgroundColor: "rgba(0,0,0,0.1)", height: "40px", fontSize: 15, border: "0.2px solid grey", borderRadius: "5px" }}>{this.props.author.email}</CardText>
                             <div className="d-flex align-items-center">
                                 <FontAwesomeIcon icon={faCaretSquareDown} size="1.5em" color="blue" />
                                 <Label style={{ marginLeft: "5px", marginTop: "8px", marginRight: "50px", fontSize: 13, color: "blue", fontWeight: "bold" }}>Sản phẩm: </Label>
