@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import PostItem from './postItem';
-import { Button, Modal, ModalBody, ModalHeader, Form, FormGroup, Label, Input, ModalFooter, NavLink } from 'reactstrap';
+import { Button, Modal, ModalBody, ModalHeader, ModalFooter, NavLink, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import "../../css/filter.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleDown } from '@fortawesome/free-solid-svg-icons';
@@ -15,6 +15,7 @@ export default class Filter extends Component {
         isOnClick: false,
         ModalCategoryVisible: false,
         ModalCategoryProductVisible: false,
+        totalPosts: [],
     }
 
 
@@ -53,10 +54,15 @@ export default class Filter extends Component {
     }
 
     checkFilter = (item) => {
-        if (this.state.filterCategory || this.state.filterAddress) {
-            return (item.props.post.category === this.state.filterCategory || item.props.post.address === this.state.filterAddress)
-        } else if (this.state.filterCategory && this.state.filterAddress) {
-            return item.props.post.address === this.state.filterAddress && item.props.post.category === this.state.filterCategory
+        var filter = {
+            category: this.state.filterCategory,
+            address: this.state.filterAddress
+        }
+        if (this.state.filterCategory && this.state.filterAddress) {
+            return (item.props.post.category === filter.category && item.props.post.address === filter.address)
+        } else {
+            console.log("d")
+            return (item.props.post.category === filter.category || item.props.post.address === filter.address)
         }
     }
 
@@ -72,7 +78,7 @@ export default class Filter extends Component {
     componentDidMount() {
         const token = localStorage.getItem("jwt_token");
         const AuthStr = 'Bearer ' + token;
-        axios.get("http://localhost:4000/posts",
+        axios.get(`http://localhost:4000/posts/page?page=1`,
             { headers: { 'Authorization': AuthStr } }
         ).then(response => {
             // console.log("res: ", response.data)
@@ -81,12 +87,43 @@ export default class Filter extends Component {
             .catch(function (error) {
                 console.log(error);
             })
-
+        axios.get(`http://localhost:4000/posts`,
+            { headers: { 'Authorization': AuthStr } }
+        ).then(response => {
+            // console.log("res: ", response.data)
+            this.setState({ totalPosts: response.data });
+        })
+            .catch(function (error) {
+                console.log(error);
+            })
     }
-    render() {
-        console.log(this.props)
-        return (
 
+    pagination(page) {
+        const token = localStorage.getItem("jwt_token");
+        const AuthStr = 'Bearer ' + token;
+        axios.get(`http://localhost:4000/posts/page?page=${page}`,
+            { headers: { 'Authorization': AuthStr } }
+        ).then(response => {
+            // console.log("res: ", response.data)
+            this.setState({ posts: response.data });
+        })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
+    render() {
+        const pageCount = Math.ceil(this.state.totalPosts.length / 3);
+        var listPage = []
+        for (var i = 1; i <= pageCount; i++) {
+            listPage.push(i)
+        }
+        var filter = {
+            category: this.state.filterCategory,
+            address: this.state.filterAddress
+        }
+        console.log(this.state.posts)
+        return (
             <div className="filter" style={{ marginLeft: "25%", marginRight: "25%", marginTop: "20px" }}>
                 <div className="filter-address p-3">
                     <div className="container">
@@ -107,18 +144,22 @@ export default class Filter extends Component {
                                 }
 
                             </div>
-                            {this.state.filterCategory &&
-                                <div className="d-flex" style={{ height: "30px", width: "110px", justifyContent: "center" }}>
-                                    <FontAwesomeIcon color="red" style={{ float: "right", marginRight: "3px", marginTop: "5px" }} icon={faWindowClose} />
-                                    <p style={{ fontSize: "15px", marginTop: "2px", color: "red" }} >{this.state.filterCategory}</p>
+                            <div className="col-4">
+                                <div className="d-flex">
+                                    {this.state.filterCategory &&
+                                        <div className="d-flex" style={{ height: "30px", width: "110px", justifyContent: "center" }}>
+                                            <FontAwesomeIcon color="red" style={{ float: "right", marginRight: "3px", marginTop: "5px" }} icon={faWindowClose} />
+                                            <p style={{ fontSize: "15px", marginTop: "2px", color: "red" }} >{this.state.filterCategory}</p>
+                                        </div>
+                                    }
+                                    {this.state.filterAddress &&
+                                        <div className="d-flex" style={{ height: "30px", width: "110px", justifyContent: "center" }}>
+                                            <FontAwesomeIcon color="red" style={{ float: "right", marginRight: "3px", marginTop: "5px" }} icon={faWindowClose} />
+                                            <p style={{ fontSize: "15px", marginTop: "2px", color: "red" }} >{this.state.filterAddress}</p>
+                                        </div>
+                                    }
                                 </div>
-                            }
-                            {this.state.filterAddress &&
-                                <div className="d-flex" style={{ height: "30px", width: "110px", justifyContent: "center" }}>
-                                    <FontAwesomeIcon color="red" style={{ float: "right", marginRight: "3px", marginTop: "5px" }} icon={faWindowClose} />
-                                    <p style={{ fontSize: "15px", marginTop: "2px", color: "red" }} >{this.state.filterAddress}</p>
-                                </div>
-                            }
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -127,17 +168,19 @@ export default class Filter extends Component {
                         <>
                             <div className="row">
                                 <br></br>
-                                {this.state.posts.map(post =>
+                                {this.state.totalPosts.map(post =>
                                     <PostItem
                                         key={post.id}
                                         post={post}
-                                        isFollowing={this.props.listFollowing.indexOf(post.email) > -1}
+                                        isFollowing={this.props.listFollowing.indexOf(post.author.username) === -1}
                                         isFollowPost={this.props.listFollowingPost.indexOf(post.title > -1)}
                                         onFollow={this.props.onFollow}
                                         onFollowPost={this.props.onFollowPost}
                                         onUnfollow={this.props.onUnfollow}
                                         authedUser={this.props.authedUser} />
-                                ).filter(item => this.checkFilter(item))
+
+                                ).filter((item) => this.checkFilter(item)
+                                )
                                 }
                             </div>
                         </> : <>
@@ -151,7 +194,7 @@ export default class Filter extends Component {
                                         onUnfollow={this.props.onUnfollow}
                                         onFollowPost={this.props.onFollowPost}
                                         authedUser={this.props.authedUser}
-                                        isFollowing={this.props.listFollowing.indexOf(post.email) > -1}
+                                        isFollowing={this.props.listFollowing.indexOf(post.author.username) === -1}
                                         isFollowPost={this.props.listFollowingPost.indexOf(post.title > -1)}
                                     />
                                 )
@@ -264,6 +307,27 @@ export default class Filter extends Component {
                         <br></br>
                     </ModalFooter>
                 </Modal>
+                <Pagination aria-label="Page navigation example" style={{ marginLeft: "250px" }}>
+                    <PaginationItem>
+                        <PaginationLink first href="#" />
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink previous href="#" />
+                    </PaginationItem>
+                    {listPage.map((i) => {
+                        return <PaginationItem>
+                            <PaginationLink href="#" onClick={() => this.pagination(i)}>
+                                {i}
+                            </PaginationLink>
+                        </PaginationItem>
+                    })}
+                    <PaginationItem>
+                        <PaginationLink next href="#" />
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink last href="#" />
+                    </PaginationItem>
+                </Pagination>
             </div>
         )
     }

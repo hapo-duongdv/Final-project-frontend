@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import { Input, Button, Form } from 'reactstrap';
+import { Input, Button, Form, UncontrolledButtonDropdown, DropdownToggle, DropdownItem, DropdownMenu } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faCartPlus, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import '../css/index.css'
 import { withRouter } from 'react-router-dom';
-import { faListAlt , faBell, faArrowAltCircleDown, faBuilding, faComment } from '@fortawesome/free-regular-svg-icons';
-
-// library.add(fal);
+import { faListAlt, faBell, faArrowAltCircleDown, faBuilding, faComment } from '@fortawesome/free-regular-svg-icons';
 
 class Header extends Component {
     state = {
-        search: ""
+        search: "",
+        searchBy: ""
     }
 
     searchOnChange = (event) => {
@@ -19,20 +18,35 @@ class Header extends Component {
         })
     }
 
+    onSearchByOnChange = (event) => {
+        this.setState({
+            searchBy: event.target.value
+        })
+    }
+
+
     onSearch = (event) => {
         event.preventDefault();
-        this.props.history.push(`/search?q=${this.state.search}`)
+        if (this.state.searchBy === "users") {
+            this.props.history.push(`/search?q=${this.state.search}`)
+        }
+        else if (this.state.searchBy === "posts") {
+            this.props.history.push(`/searchPost?q=${this.state.search}`)
+        }
+        else {
+            this.props.history.push(`/searchPost?q=${this.state.search}`)
+        }
     }
 
     onLogout = (e) => {
         // e.preventDefault();
         this.props.logout()
         alert("Logout");
-        window.location.href="/"
+        window.location.href = "/"
     }
 
     render() {
-        // console.log(this.props)
+        console.log(this.props.isAuthed)
         return (
             <header className="header" style={{ backgroundColor: "#ffba00" }}>
                 <div className="appWrapper-Layout-container">
@@ -66,7 +80,18 @@ class Header extends Component {
                     <div className="search-box">
                         <Form onSubmit={this.onSearch} style={{ display: "flex" }}>
                             <Input value={this.state.search} onChange={this.searchOnChange} placeholder="  Tìm kiếm trên chợ tốt...." />
-                            <Button style={{ marginLeft: "-40px", backgroundColor: "white", border: "white" }} ><FontAwesomeIcon color="grey" icon={faSearch} /></Button>
+                            <Input
+                                style={{ marginTop: "2px", width: "120px", border: "white", height: "30px", marginLeft: "-160px" }}
+                                type="select"
+                                name="select"
+                                id="exampleSelect"
+                                value={this.state.searchBy}
+                                onChange={this.onSearchByOnChange}>
+                                <option value="">search by</option>
+                                <option>users</option>
+                                <option>posts</option>
+                            </Input>
+                            <Button style={{ backgroundColor: "white", border: "white", height: "30px" }} ><FontAwesomeIcon color="grey" icon={faSearch} /></Button>
                         </Form>
                     </div>
                     <div className="login-modal">
@@ -80,10 +105,17 @@ class Header extends Component {
 
                     </div>
                     <div className="post" style={{ backgroundColor: "#fc9807", marginLeft: "auto" }}>
-                        <a href="/new-post" style={{ textDecoration: "none" }}>
-                            <FontAwesomeIcon icon={faCartPlus} style={{ color: "white" }} />
-                            <span style={{ marginLeft: "15px", fontWeight: "bold" }}>ĐĂNG TIN</span>
-                        </a>
+                        {this.props.isAuthed === false ? <>
+                            <a href="/login" style={{ textDecoration: "none" }}>
+                                <FontAwesomeIcon icon={faCartPlus} style={{ color: "white" }} />
+                                <span style={{ marginLeft: "15px", fontWeight: "bold" }}>ĐĂNG TIN</span>
+                            </a></> :
+                            <a href="/new-post" style={{ textDecoration: "none" }}>
+                                <FontAwesomeIcon icon={faCartPlus} style={{ color: "white" }} />
+                                <span style={{ marginLeft: "15px", fontWeight: "bold" }}>ĐĂNG TIN</span>
+                            </a>
+                        }
+
                     </div>
                 </div>
             </header>

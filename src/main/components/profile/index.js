@@ -4,12 +4,11 @@ import axios from 'axios';
 import '../../css/profile.css'
 import avatar from '../../images/avatar.jpg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelopeSquare, faPhone, faAddressCard, faCalendarDay, faCartPlus, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelopeSquare, faPhone, faAddressCard, faCalendarDay, faCartPlus } from '@fortawesome/free-solid-svg-icons';
 import Edit from './edit';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
 import MyPost from './myPost';
-import { Input } from 'reactstrap'
 
 class Profile extends Component {
     state = {
@@ -41,7 +40,7 @@ class Profile extends Component {
         var post = this.state.posts.filter(item => item.title === query);
         return (
             <div className="profile">
-                <p>>>Trang cá nhân của {this.state.user.name}</p>
+                <p>Trang cá nhân của {this.state.user.name}</p>
                 <div className="infor d-flex " style={{ backgroundColor: "rgba(0,0,0,0.1", height: "150px" }}>
                     <div className="infor-left col-6 h-100 d-flex flex-row" style={{ borderRight: "0.1px solid white" }}>
                         <div className="avatar p-3">
@@ -82,7 +81,7 @@ class Profile extends Component {
                     <p className="p-2"><strong>Bài đăng của bạn</strong></p>
                     <div className="container">
                         <div className="row">
-                            {this.state.posts === [] ? <>
+                            {this.state.posts.length === 0 ? <>
                                 <div className=""><span className="p-2">Bạn chưa đăng tin nào.</span>
                                     <span className="p-2">Bạn có muốn đăng tin?</span>
                                     <div className="post p-2" style={{ backgroundColor: "#fc9807" }}>
@@ -91,7 +90,7 @@ class Profile extends Component {
                                             <span style={{ marginLeft: "15px", fontWeight: "bold" }}>ĐĂNG TIN</span>
                                         </a>
                                     </div></div>
-                            </> : <>{query ? <>
+                            </> : <>{ query ? <>
                                 {this.state.posts.filter(item => item.title === query).map((post, i) => {
                                     return <>
                                         <MyPost post={post} key={i} />

@@ -53,11 +53,11 @@ class ModalShow extends React.Component {
 
     render() {
         const post = this.props.post;
+        const isFollow = this.props.listFollow.indexOf(post.username)
         return (
 
             <Modal
                 isOpen={this.props.visible}
-                // toggle={this.props.onToggle}
                 className={this.props.className}
             >
                 <Container fluid={true} style={{ paddingTop: "12px", paddingBottom: "12px" }}>
@@ -70,8 +70,8 @@ class ModalShow extends React.Component {
                                 <FontAwesomeIcon icon={faUserCircle} size="1.5em" color="blue" />
                                 <Label style={{ marginLeft: "5px", marginTop: "8px", marginRight: "50px", fontSize: 13, color: "blue", fontWeight: "bold" }}>Người bán:</Label>
                                 {
-                                    this.props.isFollowing
-                                        ? <Button style={{ width: "55px", height: "30px", fontSize: "12px" }} outline color="danger" className=" pr-2" onClick={this.unfollow}>Unfollow</Button>
+                                    isFollow
+                                        ? <Button style={{ width: "70px", height: "30px", fontSize: "12px" }} outline color="danger" className=" pr-2" onClick={this.unfollow}>Unfollow</Button>
                                         : <Button style={{ width: "55px", height: "30px", fontSize: "12px" }} outline color="primary" className=" pr-2" onClick={this.follow}>Follow</Button>
                                 }
                             </div>

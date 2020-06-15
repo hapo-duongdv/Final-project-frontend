@@ -90,7 +90,6 @@ export default class EditPost extends Component {
                 { headers: { 'Authorization': AuthStr } }
             )
             if (response.status === 200) {
-                this.reset();
                 alert("Post updated!")
             }
         } catch (err) {
@@ -99,16 +98,6 @@ export default class EditPost extends Component {
 
         this.toggleLoading();
         window.location.href = "profile"
-    }
-
-    reset = () => {
-        this.setState({
-            title: "",
-            description: "",
-            status: "",
-            cost: "",
-            imgFile: null
-        })
     }
 
     componentDidMount() {
@@ -130,7 +119,7 @@ export default class EditPost extends Component {
                 className={this.props.className}>
                 <div style={{ padding: 10 }}>
                     <h3 className="pb-20 pt-30">Chỉnh sửa bài đăng</h3>
-                    <Form onSubmit={this.onSubmit} onReset={this.reset} >
+                    <Form onSubmit={this.onSubmit} >
                         <Row form>
                             <Col md={12}>
                                 <FormGroup>
@@ -176,6 +165,7 @@ export default class EditPost extends Component {
                                 onChange={this.onAddressOnChange} />
                         </FormGroup>
                         <FormGroup>
+                        <Label for="examplePhone">Cập nhật ảnh</Label>
                             <Input
                                 type="file"
                                 name="file"
@@ -192,7 +182,6 @@ export default class EditPost extends Component {
                             )}
                         </FormGroup>
                         <Button disabled={this.state.loading} outline color="secondary" className="float-right" onClick={this.props.onToggle}>CANCEL</Button>
-                        <Button disabled={this.state.loading} outline color="warning" className="float-right" type="reset">RESET</Button>
                         <Button disabled={this.state.loading} outline color="primary" className="float-right" type="submit">EDIT</Button>
                     </Form>
                 </div>

@@ -9,9 +9,6 @@ import '../../css/postItem.css';
 
 export default class PostItem extends Component {
     state = {
-        liked: false,
-        numberOfLike: 0,
-        comments: [],
         currentUser: [],
         modalShowVisible: false,
         list_followingPost: [],
@@ -28,54 +25,59 @@ export default class PostItem extends Component {
     follow = async () => {
         // const followingId = ;
         const followingEmail = this.props.post.author.email;
-        console.log(this.props.author)
         const token = localStorage.getItem("jwt_token");
         const AuthStr = 'Bearer ' + token;
-        try {
-            const res = await axios.post("http://localhost:4000/users/follow/" + this.props.post.author.id, this.state.currentUser, { headers: { 'Authorization': AuthStr } })
-            this.props.onFollow(followingEmail);
-            if (res.status === 201) {
-                alert("follow success")
+        if (this.state.currentUser.length === 0) {
+            alert("Cần đăng nhập")
+        } else {
+            try {
+                const res = await axios.post("http://localhost:4000/followers/" + this.props.post.author.id, this.state.currentUser.id, { headers: { 'Authorization': AuthStr } })
+                // this.props.onFollow(followingEmail);
+                if (res.status === 201) {
+                    alert("follow success")
 
-                return res.data
+                    return res.data
+                }
             }
-            else {
-                throw Error("Cannot follow!", res);
+            catch (err) {
+                alert("Cannot follow post!")
             }
         }
-        catch (err) {
-            console.log(err)
-            alert("Cannot follow post!")
-        }
+
     }
 
     followPost = async () => {
         const followingPost = this.props.post;
         const token = localStorage.getItem("jwt_token");
         const AuthStr = 'Bearer ' + token;
-        try {
-            const user = await axios.get("http://localhost:4000/users/" + this.state.currentUser.id, { headers: { 'Authorization': AuthStr } })
-            const res = await axios.post("http://localhost:4000/posts/follow-post/" + followingPost.id, user.data, { headers: { 'Authorization': AuthStr } })
-            for (var post of this.state.list_followingPost) {
-                var i = 0;
-                if (post.title === followingPost.title) {
-                    i += 1;
-                    alert("post followed")
-                    break;
+        if (this.state.currentUser.length === 0) {
+            alert("Cần đăng nhập")
+        } else {
+            try {
+                const user = await axios.get("http://localhost:4000/users/" + this.state.currentUser.id, { headers: { 'Authorization': AuthStr } })
+                const res = await axios.post("http://localhost:4000/posts/follow-post/" + followingPost.id, user.data, { headers: { 'Authorization': AuthStr } })
+                for (var post of this.state.list_followingPost) {
+                    var i = 0;
+                    if (post.title === followingPost.title) {
+                        i += 1;
+                        alert("post followed")
+                        break;
+                    }
+                }
+                if (i === 0) {
+                    this.setState({
+                        list_followingPost: this.state.list_followingPost.push(followingPost)
+                    })
+                    alert("successfully!")
                 }
             }
-            if (i === 0) {
-                this.setState({
-                    list_followingPost: this.state.list_followingPost.push(followingPost)
-                })
-                alert("successfully!")
+            catch (err) {
+                alert("OK")
             }
+            window.location.href = "filter"
         }
-        catch (err) {
-            console.log(err)
-            alert(err)
-        }
-        window.location.href = "filter"
+
+
     }
 
     checkIsFollowPost = (item) => {
@@ -102,11 +104,12 @@ export default class PostItem extends Component {
     }
 
     render() {
+        // console.log(this.state.currentUser)
         const post = this.props.post;
         const created_at = String(post.created_at).split('-')[0];
         return (
             <div className="col-md-12" style={{ marginTop: 10, marginBottom: 10 }}>
-                <Card className="post-item ">
+                {post.isShow === true && <Card className="post-item ">
                     <CardBody className="d-flex">
                         <CardTitle>
                             <div>
@@ -135,6 +138,7 @@ export default class PostItem extends Component {
                         </div>
                     </CardBody>
                 </Card>
+                }
                 <ModalShow
                     visible={this.state.modalShowVisible}
                     onToggle={this.toggleShowModalVisible}

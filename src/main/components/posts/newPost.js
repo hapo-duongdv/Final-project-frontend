@@ -16,6 +16,7 @@ class CreatePost extends Component {
         address: "",
         agreeRoles: false,
         imgFile: null,
+        isShow: false
     }
 
     onTitleOnChange = (event) => {
@@ -102,7 +103,8 @@ class CreatePost extends Component {
                 cost: this.state.cost,
                 category: this.state.category,
                 imgUrl: image.data.filename,
-                address: this.state.address
+                address: this.state.address,
+                isShow: this.state.isShow
             }
             const token = localStorage.getItem("jwt_token");
             const AuthStr = 'Bearer ' + token;
@@ -123,7 +125,7 @@ class CreatePost extends Component {
     }
 
     render() {
-        // console.log(this.state.imgFile.name);
+        console.log(this.props.authedUser);
         return (
             <div className="mx-auto mt-2 new-post" style={{ width: "400px" }}>
                 <div className="container">

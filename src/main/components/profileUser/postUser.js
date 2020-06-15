@@ -49,7 +49,7 @@ export default class PostUser extends Component {
     }
     render() {
         // const post = this.props.post;
-        console.log(this.props.author)
+        // console.log(this.props.author)
         return (
             <div className="col-md-4" style={{ marginTop: 10, marginBottom: 10 }}>
                 <Card className="posts">
@@ -59,7 +59,7 @@ export default class PostUser extends Component {
                         <CardText className="mb-2" style={{ fontSize: 15 }}>{this.props.post.cost} đ</CardText>
                         <CardText className="mb-2" style={{ fontSize: 18 }}>{this.props.post.address}</CardText>
                         <CardText className="mb-2" style={{ fontSize: 18 }}>{this.props.post.status}</CardText>
-                        <NavLink href="#" className="mb-2 p-0 pr-2" style={{ fontSize: 15, borderRight: "0.2px solid" }} onClick={this.toggleShowModalVisible}>Xem thêm</NavLink>
+                        <NavLink href="#" className="mb-2 p-0 pr-2" style={{ fontSize: 15}} onClick={this.toggleShowModalVisible}>Xem thêm</NavLink>
                     </CardBody>
                 </Card>
                 <ModalShow
@@ -67,7 +67,7 @@ export default class PostUser extends Component {
                     onToggle={this.toggleShowModalVisible}
                     post={this.props.post}
                     author={this.props.author}
-                    isFollowing={this.props.isFollowing}
+                    listFollow={this.props.listFollow}
                 ></ModalShow>
             </div>
         )

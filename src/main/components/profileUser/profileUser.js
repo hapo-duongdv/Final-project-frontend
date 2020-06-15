@@ -4,12 +4,9 @@ import axios from 'axios';
 import '../../css/profile.css'
 import avatar from '../../images/avatar.jpg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelopeSquare, faPhone, faAddressCard, faCalendarDay, faCartPlus, faUserCircle } from '@fortawesome/free-solid-svg-icons';
-import Edit from '../profile/edit';
+import { faEnvelopeSquare, faPhone, faAddressCard, faCalendarDay, faCartPlus } from '@fortawesome/free-solid-svg-icons';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
-import MyPost from '../profile/myPost';
-import { Input } from 'reactstrap'
 import PostUser from './postUser';
 
 class ProfileUser extends Component {
@@ -45,7 +42,7 @@ class ProfileUser extends Component {
         console.log(this.state.posts)
         return (
             <div className="profile">
-                <p>>>Trang cá nhân của {this.state.user.name}</p>
+                <p>Trang cá nhân của {this.state.user.name}</p>
                 <div className="infor d-flex " style={{ backgroundColor: "rgba(0,0,0,0.1", height: "150px" }}>
                     <div className="infor-left col-6 h-100 d-flex flex-row" style={{ borderRight: "0.1px solid white" }}>
                         <div className="avatar p-3">
@@ -97,7 +94,7 @@ class ProfileUser extends Component {
                                     </div></div>
                             </> : <>
                                     {this.state.posts.map((post, i) => {
-                                        return <PostUser author={this.state.user} post={post} key={i} />
+                                        return <PostUser author={this.state.user} post={post} key={i} listFollow = {this.props.listFollowing} />
                                     })}
                                 </>
                             }

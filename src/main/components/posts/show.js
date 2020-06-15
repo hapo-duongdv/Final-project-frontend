@@ -3,6 +3,7 @@ import { Button, Label, Modal, CardImg, CardText, Container, Row, Col } from 're
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle, faCaretSquareDown, faSmileBeam } from '@fortawesome/free-regular-svg-icons';
 import axios from 'axios';
+import { withRouter } from 'react-router-dom'
 
 class ModalShow extends React.Component {
 
@@ -11,29 +12,29 @@ class ModalShow extends React.Component {
     }
 
     follow = async () => {
-        // const followingId = ;
         const followingEmail = this.props.post.author;
         const token = localStorage.getItem("jwt_token");
         const AuthStr = 'Bearer ' + token;
-        try {
-            const user = await axios.get("http://localhost:4000/users/" + this.state.currentUser.id, { headers: { 'Authorization': AuthStr } })
-            const res = await axios.post("http://localhost:4000/users/follow/" + this.props.post.author.id, user, { headers: { 'Authorization': AuthStr } })
-            this.props.onFollow(followingEmail);
-            if (res.status === 201) {
-                alert("follow success")
-                return res.data
+        if (this.state.currentUser.length === 0) {
+            alert("Cần đăng nhập!")
+        } else {
+            try {
+                const user = await axios.get("http://localhost:4000/users/" + this.state.currentUser.id, { headers: { 'Authorization': AuthStr } })
+                const follow = { "id": user.data.id }
+                const res = await axios.post("http://localhost:4000/followers/" + this.props.post.author.id, follow, { headers: { 'Authorization': AuthStr } })
+                this.props.onFollow(followingEmail.username);
+                if (res.status === 201) {
+                    alert("follow success")
+                    return res.data
+                }
             }
-            else {
-                throw Error("Cannot follow!", res);
+            catch (err) {
+                console.log(err)
+                alert("Cannot follow user!")
             }
+            window.location.href = "filter"
+        }
 
-            // this.props.onFollow(res.follower);
-        }
-        catch (err) {
-            console.log(err)
-            alert("Cannot follow user!")
-        }
-        window.location.href = "filter"
     }
 
     async componentDidMount() {
@@ -51,7 +52,12 @@ class ModalShow extends React.Component {
         return alert("Please call to: " + this.props.post.author.phone)
     }
 
+    chat = (user) => {
+        this.props.history.push(`/chat?user=${user}`)
+    }
+
     render() {
+        // console.log(this.props)
         const post = this.props.post;
         return (
 
@@ -70,8 +76,8 @@ class ModalShow extends React.Component {
                                 <FontAwesomeIcon icon={faUserCircle} size="1.5em" color="blue" />
                                 <Label style={{ marginLeft: "5px", marginTop: "8px", marginRight: "50px", fontSize: 13, color: "blue", fontWeight: "bold" }}>Người bán:</Label>
                                 {
-                                    this.props.isFollowing
-                                        ? <Button style={{ width: "55px", height: "30px", fontSize: "12px" }} outline color="danger" className=" pr-2" onClick={this.unfollow}>Unfollow</Button>
+                                    !this.props.isFollowing
+                                        ? <Button style={{ width: "70px", height: "30px", fontSize: "12px" }} outline color="danger" className=" pr-2" onClick={this.unfollow}>Unfollow</Button>
                                         : <Button style={{ width: "55px", height: "30px", fontSize: "12px" }} outline color="primary" className=" pr-2" onClick={this.follow}>Follow</Button>
                                 }
                             </div>
@@ -115,7 +121,7 @@ class ModalShow extends React.Component {
                     <div className="container">
                         <div className="row">
                             <Button className="col-md-4 pl-2" width="100px" onClick={this.call}> Call </Button>
-                            <Button href="/chat" className="col-md-4 p-2" width="auto" color="secondary" >Chat </Button>
+                            <Button onClick={() => { this.chat(post.author.username) }} className="col-md-4 p-2" width="auto" color="secondary" >Chat </Button>
                             <Button className="col-md-4 p-2" style={{ float: "right" }} width="auto" color="secondary" onClick={this.props.onToggle} >Cancel </Button>
                         </div>
                     </div>
@@ -126,4 +132,4 @@ class ModalShow extends React.Component {
     }
 }
 
-export default ModalShow;
+export default withRouter(ModalShow);

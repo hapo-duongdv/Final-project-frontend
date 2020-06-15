@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../css/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Button } from 'reactstrap';
 
 export default class Main extends Component {
     render() {
@@ -8,8 +9,7 @@ export default class Main extends Component {
             <main className="main">
                 <div className="main-container">
                     <div className="list-category pt-3">
-                        <a href='/filter' style={{ fontSize: "15px", fontWeight: "bold" ,textDecoration:"none" }}>Khám phá danh mục</a>
-                        <div className="container" style={{backgroundColor:"white"}}>
+                        <div className="container" style={{ backgroundColor: "white" }}>
                             <div className="row">
                                 <div className="col-4 list-item-category image"><p style={{ marginTop: "90px", fontSize: "12px", fontWeight: "bold", color: "white" }}>Xe cộ</p></div>
                                 <div className="col-3 list-item-category image-2"><p style={{ marginTop: "90px", fontSize: "12px", fontWeight: "bold", color: "white" }}>Đồ điện tử</p></div>
@@ -22,8 +22,9 @@ export default class Main extends Component {
                             </div>
                         </div>
                     </div>
+                    <Button style={{marginLeft:"350px", marginTop:"20px", marginBottom:"20px", width:"200px"}} outline color="primary"><a href='/filter' style={{ fontSize: "15px", fontWeight: "bold", textDecoration: "none" }}>Khám phá ngay</a></Button>
                     <div className="description">
-                        <p>Chợ Tốt chính thức gia nhập thị trường Việt Nam vào đầu năm 2012, với mục đích tạo ra cho bạn một kênh rao vặt trung gian, kết nối người mua với người bán lại với nhau bằng những giao dịch cực kỳ đơn giản, tiện lợi, nhanh chóng, an toàn, mang đến hiệu quả bất ngờ.</p>
+                        <p><strong>CHỢ TỐT</strong> chính thức gia nhập thị trường Việt Nam vào đầu năm 2012, với mục đích tạo ra cho bạn một kênh rao vặt trung gian, kết nối người mua với người bán lại với nhau bằng những giao dịch cực kỳ đơn giản, tiện lợi, nhanh chóng, an toàn, mang đến hiệu quả bất ngờ.</p>
                         <p>Đến nay, Chợ Tốt tự hào là Website rao vặt được ưa chuộng hàng đầu Việt Nam. Hàng ngàn món hời từ Bất động sản, Nhà cửa, Xe cộ, Đồ điện tử, Thú cưng, Vật dụng cá nhân... đến tìm việc làm, thông tin tuyển dụng, các dịch vụ - du lịch được đăng tin, rao bán trên Chợ Tốt.</p>
                         <p>Với Chợ Tốt, bạn có thể dễ dàng mua bán, trao đổi bất cứ một loại mặt hàng nào, dù đó là đồ cũ hay đồ mới với nhiều lĩnh vực:</p>
                         <p><strong>Bất động sản</strong>: Cho thuê, Mua bán nhà đất, căn hộ chung cư, văn phòng mặt bằng kinh doanh, phòng trọ đa dạng về diện tích, vị trí</p>

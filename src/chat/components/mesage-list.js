@@ -5,12 +5,13 @@ import Item from './mesage-item';
 
 
 export default class MessageList extends React.Component {
-    render () {
+
+    render() {
         return (
             <ul className="messages clo-md-5">
                 {this.props.messages.map(item =>
-                    <Item user={this.props.user} key={item.id} isUser={item.userId === this.props.user.id ? true : false} message={item.message}/>
-                )}   
+                    <Item user={this.props.user} key={item.id} history={this.props.history} isUser={item.sender === this.props.user.username ? true : false} userChat={this.props.history ? item.sender : null} message={item.message} />
+                )}
             </ul>
         )
     }

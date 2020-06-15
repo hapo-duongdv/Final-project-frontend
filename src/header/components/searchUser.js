@@ -4,8 +4,8 @@ import queryString from 'query-string'
 import axios from 'axios'
 // import ListUser from '../ListUser'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import { faCalendarAlt, faUser } from '@fortawesome/free-regular-svg-icons';
+// import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { CardText, Container, Row, Col, NavLink } from 'reactstrap'
 
 class Search extends Component {
