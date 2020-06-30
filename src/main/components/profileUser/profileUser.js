@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import '../../css/profile.css'
-import avatar from '../../images/avatar.jpg';
+import avatar from '../../../header/images/member-profile-avatar_140x140.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelopeSquare, faPhone, faAddressCard, faCalendarDay, faCartPlus } from '@fortawesome/free-solid-svg-icons';
 import queryString from 'query-string';
@@ -26,7 +26,6 @@ class ProfileUser extends Component {
         const id = queryString.parse(this.props.location.search).q;
         const token = localStorage.getItem("jwt_token");
         const AuthStr = 'Bearer ' + token;
-        // const user = await axios.get(`http://localhost:4000/users/me/${token}`, { headers: { 'Authorization': AuthStr } })
         const userCurrent = await axios.get(`http://localhost:4000/users/${id}`, { headers: { 'Authorization': AuthStr } })
         console.log(userCurrent)
         this.setState({
@@ -36,10 +35,8 @@ class ProfileUser extends Component {
     }
 
     render() {
-        // console.log(queryString.parse(this.props.location.search).q)
         const query = queryString.parse(this.props.location.search).q;
-        // // var post = this.state.posts.filter(item => item.title === query);
-        console.log(this.state.posts)
+        const created_at = (String)(this.state.user.created_at).slice(0, 10)
         return (
             <div className="profile">
                 <p>Trang cá nhân của {this.state.user.name}</p>
@@ -75,7 +72,7 @@ class ProfileUser extends Component {
                         </div>
                         <div className="pt-1">
                             <FontAwesomeIcon icon={faCalendarDay} size="1.5em" color="grey" />
-                            <span><strong style={{ color: "grey", fontWeight: "400" }}>    Ngày tham gia: </strong>{this.state.user.created_at}</span>
+                            <span><strong style={{ color: "grey", fontWeight: "400" }}>    Ngày tham gia: </strong>{created_at}</span>
                         </div>
                     </div>
                 </div>
@@ -94,7 +91,7 @@ class ProfileUser extends Component {
                                     </div></div>
                             </> : <>
                                     {this.state.posts.map((post, i) => {
-                                        return <PostUser author={this.state.user} post={post} key={i} listFollow = {this.props.listFollowing} />
+                                        return <PostUser author={this.state.user} post={post} key={i} listFollow={this.props.listFollowing} />
                                     })}
                                 </>
                             }

@@ -48,38 +48,74 @@ export default class MyPost extends Component {
         }
         window.location.href = "profile"
     }
+
+    cost(cost) {
+        while (/(\d+)(\d{3})/.test(cost.toString())) {
+            cost = cost.toString().replace(/(\d+)(\d{3})/, '$1' + '.' + '$2');
+        }
+        return cost
+    }
+
+    async confirmDelete() {
+        var x = window.confirm("Are you sure you want to delete?");
+        if (x) {
+            await this.showPosts()
+        }
+        else
+            return false;
+    }
+
+    async showPosts() {
+        try {
+            const token = localStorage.getItem("jwt_token");
+            const AuthStr = 'Bearer ' + token;
+            const post = {
+                isShow: false
+            }
+            const res = await axios.put('http://localhost:4000/posts/' + this.props.post.id, post, { headers: { 'Authorization': AuthStr } })
+            if (res.status === 200) {
+                window.location.href = "/profile"
+                alert("Successfully")
+            }
+        } catch (err) {
+            alert(err)
+        }
+
+    }
+
+
     render() {
-        // const post = this.props.post;
-        // console.log(this.props.post)
+        console.log(this.props.post.isShow)
         return (
-            <div className="col-md-4" style={{ marginTop: 10, marginBottom: 10 }}>
-                <Card className="posts">
-                    <CardBody>
-                        <CardImg className="mb-2" style={{ width: "175px", height: "150px" }} src={"http://localhost:4000/posts/image/" + this.props.post.imgUrl} />
-                        <CardText className="mb-2" style={{ fontSize: 18 }}>{this.props.post.title}</CardText>
-                        <CardText className="mb-2" style={{ fontSize: 15 }}>{this.props.post.cost} đ</CardText>
-                        <div className="d-flex">
-                            <NavLink href="#" className="mb-2 p-0 pr-2" style={{ fontSize: 15, borderRight: "0.2px solid" }} onClick={this.toggleShowModalVisible}>Xem thêm</NavLink>
-                            <NavLink href="#" className="mb-2 p-0 ml-2" style={{ fontSize: 15 }} onClick={this.toggleModalEditPostVisible}>Chỉnh sửa</NavLink>
-                        </div>
-                        <Button onClick={this.delete} style={{ fontSize: "10px", width: "50px", marginLeft: "auto" }} color="danger">XÓA</Button>
-                    </CardBody>
-                </Card>
-                < EditPost
-                    visible={this.state.modalEditPostVisible}
-                    onToggle={this.toggleModalEditPostVisible}
-                    key={this.props.post.id}
-                    post={this.props.post} />
-                <ModalShow
-                    visible={this.state.modalShowVisible}
-                    onToggle={this.toggleShowModalVisible}
-                    post={this.props.post}
-                    // onFollow={this.props.onFollow}
-                    // onUnfollow={this.props.onUnfollow}
-                    author={this.props.author}
-                    isFollowing={this.props.isFollowing}
-                ></ModalShow>
-            </div>
+            <> {this.props.post.isShow &&
+                <div className="col-md-4" style={{ marginTop: 10, marginBottom: 10 }}>
+                    <Card className="posts">
+                        <CardBody>
+                            <CardImg className="mb-2" style={{ width: "175px", height: "150px" }} src={"http://localhost:4000/posts/image/" + this.props.post.imgUrl} />
+                            <CardText className="mb-2" style={{ fontSize: 18 }}>{this.props.post.title}</CardText>
+                            <CardText className="mb-2" style={{ fontSize: 15 }}>{this.cost(this.props.post.cost)} đ</CardText>
+                            <div className="d-flex">
+                                <NavLink href="#" className="mb-2 p-0 pr-2" style={{ fontSize: 15, borderRight: "0.2px solid" }} onClick={this.toggleShowModalVisible}>Xem thêm</NavLink>
+                                <NavLink href="#" className="mb-2 p-0 ml-2" style={{ fontSize: 15 }} onClick={this.toggleModalEditPostVisible}>Chỉnh sửa</NavLink>
+                            </div>
+                            <Button onClick={() => { this.confirmDelete() }} style={{ fontSize: "10px", width: "50px", marginLeft: "auto" }} color="danger">Xóa</Button>
+                        </CardBody>
+                    </Card>
+
+                    < EditPost
+                        visible={this.state.modalEditPostVisible}
+                        onToggle={this.toggleModalEditPostVisible}
+                        key={this.props.post.id}
+                        post={this.props.post} />
+                    <ModalShow
+                        visible={this.state.modalShowVisible}
+                        onToggle={this.toggleShowModalVisible}
+                        post={this.props.post}
+                        author={this.props.author}
+                        isFollowing={this.props.isFollowing}
+                    ></ModalShow>
+                </div>
+            }</>
         )
     }
 }

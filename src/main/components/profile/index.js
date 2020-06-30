@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import '../../css/profile.css'
-import avatar from '../../images/avatar.jpg';
+import avatar from '../../../header/images/member-profile-avatar_140x140.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelopeSquare, faPhone, faAddressCard, faCalendarDay, faCartPlus } from '@fortawesome/free-solid-svg-icons';
 import Edit from './edit';
@@ -35,16 +35,16 @@ class Profile extends Component {
     }
 
     render() {
-        console.log(this.state.user)
         const query = queryString.parse(this.props.location.search).q;
         var post = this.state.posts.filter(item => item.title === query);
+        var created_at = String(this.state.user.created_at).slice(0, 10);
         return (
             <div className="profile">
                 <p>Trang cá nhân của {this.state.user.name}</p>
                 <div className="infor d-flex " style={{ backgroundColor: "rgba(0,0,0,0.1", height: "150px" }}>
                     <div className="infor-left col-6 h-100 d-flex flex-row" style={{ borderRight: "0.1px solid white" }}>
                         <div className="avatar p-3">
-                            {!this.state.user.avatar === "" ? <>
+                            {!this.state.user.avatar || !this.state.user.avatar === null || "" ? <>
                                 <img src={avatar} style={{ width: "80px", borderRadius: "50%", }} />
                             </> : <>
                                     <img src={"http://localhost:4000/users/image/" + this.state.user.avatar} style={{ width: "80px", borderRadius: "50%", }} />
@@ -73,7 +73,7 @@ class Profile extends Component {
                         </div>
                         <div className="pt-1">
                             <FontAwesomeIcon icon={faCalendarDay} size="1.5em" color="grey" />
-                            <span><strong style={{ color: "grey", fontWeight: "400" }}>    Ngày tham gia: </strong>{this.state.user.created_at}</span>
+                            <span><strong style={{ color: "grey", fontWeight: "400" }}>    Ngày tham gia: </strong>{created_at}</span>
                         </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ class Profile extends Component {
                                             <span style={{ marginLeft: "15px", fontWeight: "bold" }}>ĐĂNG TIN</span>
                                         </a>
                                     </div></div>
-                            </> : <>{ query ? <>
+                            </> : <>{query ? <>
                                 {this.state.posts.filter(item => item.title === query).map((post, i) => {
                                     return <>
                                         <MyPost post={post} key={i} />

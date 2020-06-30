@@ -8,8 +8,13 @@ import axios from 'axios';
 import '../css/chat.css';
 import { Button } from 'reactstrap';
 import queryString from 'query-string'
+import { withRouter } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPhoneAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { } from '@fortawesome/free-regular-svg-icons';
+import avatarUser from '../../header/images/member-profile-avatar_140x140.png'
 
-export default class Chat extends React.Component {
+class Chat extends React.Component {
     constructor(props) {
         super(props);
         //Khởi tạo state,
@@ -19,7 +24,9 @@ export default class Chat extends React.Component {
             userOnline: [], // danh sách người dùng đang online
             newUser: [],
             room: "",
-            chatHistory: []
+            chatHistory: [],
+            listUser: [],
+            inforUserChat: []
         }
         this.socket = null;
     }
@@ -33,10 +40,36 @@ export default class Chat extends React.Component {
         this.setState({
             user: userCurrent.data
         })
-        const chatHistory = await axios.get(`http://localhost:4000/chat/find/${userChat}`, { headers: { 'Authorization': AuthStr } })
+        const chatHistory = await axios.get(`http://localhost:4000/chat/find/${userCurrent.data.username}/${userChat}`, { headers: { 'Authorization': AuthStr } })
         this.setState({
             chatHistory: chatHistory.data
         })
+
+        const listUsers = await axios.get(`http://localhost:4000/chat/find-users/${userCurrent.data.username}`, { headers: { 'Authorization': AuthStr } })
+        for (let data of (listUsers.data)) {
+            if (data.sender === userCurrent.data.username) {
+                if (this.state.inforUserChat.indexOf(data.receiver) === -1 && this.state.listUser.indexOf(data.receiver) === -1) {
+                    var inforUserChat = await axios.get(`http://localhost:4000/users/find-chat/${data.receiver}`, { headers: { 'Authorization': AuthStr } })
+                    this.setState({
+                        listUser: [...this.state.listUser, data.receiver],
+                        inforUserChat: [...this.state.inforUserChat, inforUserChat.data]
+                    })
+                }
+            }
+        }
+        for (let chat of (listUsers.data)) {
+            if (chat.receiver === userCurrent.data.username) {
+                if (this.state.inforUserChat.indexOf(chat.sender) === -1 && this.state.listUser.indexOf(chat.sender) === -1) {
+                    var inforUserChat = await axios.get(`http://localhost:4000/users/find-chat/${chat.sender}`, { headers: { 'Authorization': AuthStr } })
+                    this.setState({
+                        listUser: [...this.state.listUser, chat.sender],
+                        inforUserChat: [...this.state.inforUserChat, inforUserChat.data]
+                    })
+                }
+
+            }
+        }
+
     }
 
 
@@ -48,7 +81,6 @@ export default class Chat extends React.Component {
             console.log(data)
         })
         this.socket.on('newMessage', (response) => {   //lắng nghe khi có tin nhắn mới  
-            console.log(response)
             this.newMessage(response)
         });
         this.socket.on('updateUesrList', (response) => { this.setState({ userOnline: response }) }); //update lại danh sách người dùng online khi có người đăng nhập hoặc đăng xuất
@@ -58,20 +90,16 @@ export default class Chat extends React.Component {
 
     //Khi có tin nhắn mới, sẽ push tin nhắn vào state mesgages, và nó sẽ được render ra màn hình
     newMessage(m) {
-        // console.log(m.data)
         const messages = this.state.messages;
         let ids = _map(messages, 'id');
         let max = Math.max(...ids);
         if (m) {
-            {
-                messages.push({
-                    id: max + 1,
-                    userId: m.id,
-                    message: m.sender + " : " + m.message,
-                    sender: m.sender
-                });
-            }
-
+            messages.push({
+                id: max + 1,
+                userId: m.id,
+                message: m.sender + " : " + m.message,
+                sender: m.sender
+            })
         }
         let objMessage = $('.messages');
         if (objMessage[0].scrollHeight - objMessage[0].scrollTop === objMessage[0].clientHeight) {
@@ -88,41 +116,59 @@ export default class Chat extends React.Component {
     //Gửi event socket newMessage với dữ liệu là nội dung tin nhắn và người gửi
     sendnewMessage(m) {
         if (m.value) {
-            this.socket.emit("sendMessage", { sender: this.state.user.username, room: queryString.parse(this.props.location.search).user, message: m.value }); //gửi event về server
+            this.socket.emit("sendMessage", { receiver: queryString.parse(this.props.location.search).user, sender: this.state.user.username, room: queryString.parse(this.props.location.search).user + this.state.user.username, message: m.value }); //gửi event về server
             m.value = "";
         }
     }
 
+    changeRoom = (username) => {
+        window.location.href = `/chat?user=${username}`
+    }
+
+    call(phone) {
+        alert("Vui lòng nhắn tin hoặc gọi điện đến: " + phone);
+    }
+
+    searchProfileUser(id) {
+        window.location.href = `http://localhost:3000/profileUser?q=${id}`
+    }
 
     render() {
         const userChat = queryString.parse(this.props.location.search).user
-        console.log(this.state.chatHistory)
         return (
             <div className="app__content" style={{ height: "600px" }}>
                 {/* kiểm tra xem user đã tồn tại hay chưa, nếu tồn tại thì render form chat, chưa thì render form login */}
                 {this.state.user.id && this.state.user.username ?
-                    <div className="chat_window" style={{ marginTop: "50px" }}>
-                        {/* <Button onClick={this.newUser}>Nhập tên</Button> */}
+                    <div className="d-flex">
                         {/* danh sách user online */}
-                        <div className="menu">
-                            <ul className="user">
-                                <span onClick={this.newUser} className="user-name">{this.state.user.username}</span>
-                                <p>Online</p>
-                                {this.state.userOnline.map(item =>
-                                    <li key={item.id}><span>{item.name}</span></li>
-                                )}
-                            </ul>
-                        </div>
-                        {/* danh sách message */}
-                        <div className="content">
-                            {this.state.chatHistory.length !== 0 && <Messages user={this.state.user} history={this.state.chatHistory.length !== 0} messages={this.state.chatHistory} typing={this.state.typing} />}
-                            <Messages user={this.state.user} messages={this.state.messages} typing={this.state.typing} />
-                            <Input sendMessage={this.sendnewMessage.bind(this)} />
-                        </div>
+                        < div className="menu" style={{}}>
+                            <p className="user-name" style={{ textAlign: "center", height: "30px", marginTop: "10px", borderBottom: "0.1px solid rgba(0,0,0,0.1)" }}>DANH SÁCH CHAT CỦA <b>{this.state.user.username}</b></p>
+                            {this.state.inforUserChat.map(item =>
+                                <div className="d-flex aligin-items-center ml-3" style={{ borderBottom: "0.1px solid rgba(0,0,0,0.1)" }} >
+                                    <div className="d-flex aligin-items-center ml-3" onClick={() => this.changeRoom(item.username)}>
+                                        {!item.avatar
+                                            ? <img style={{ borderRadius: "50%", width: "40px", height: "40px" }} src={avatarUser} />
+                                            : <img style={{ borderRadius: "50%", width: "40px", height: "40px" }} src={"http://localhost:4000/users/image/" + item.avatar} />
+                                        }
 
+                                        <p style={{ fontSize: "18px", marginLeft: "10px", marginTop: "5px" }}>{item.username}</p>
+                                    </div>
+                                    <Button outline color="primary" style={{ width: "40px", height: "10px", fontSize: "15px" }} className="ml-auto h-50" onClick={() => this.call(item.phone)}><FontAwesomeIcon icon={faPhoneAlt} /></Button>
+                                    <Button outline color="success" style={{ width: "40px", height: "10px", fontSize: "15px" }} className=" mr-2 ml-2 h-50" onClick={() => this.searchProfileUser(item.id)}><FontAwesomeIcon icon={faUserCircle} /></Button>
+                                </div>
+
+                            )}
+                        </div>
+                        <div className="chat_window" style={{ marginTop: "10px" }}>
+                            {/* danh sách message */}
+                            {userChat && <div className="content">
+                                {this.state.chatHistory.length !== 0 && <Messages user={this.state.user} history={this.state.chatHistory.length !== 0} messages={this.state.chatHistory} typing={this.state.typing} />}
+                                <Messages user={this.state.user} messages={this.state.messages} typing={this.state.typing} />
+                                <Input sendMessage={this.sendnewMessage.bind(this)} />
+                            </div>}
+                        </div>
                     </div>
                     :
-
                     <div className="login_form" style={{ marginLeft: "300px" }}>{/* form login */}
                         <p>Bạn cần đăng nhập để tiếp tục !</p>
                         <Button href="/login" color="primary">Login</Button>
@@ -132,3 +178,5 @@ export default class Chat extends React.Component {
         )
     }
 }
+
+export default withRouter(Chat)

@@ -1,39 +1,13 @@
 import React from 'react';
 import { Button, Label, Modal, CardImg, CardText, Container, Row, Col } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle, faCaretSquareDown, faSmileBeam } from '@fortawesome/free-regular-svg-icons';
+import { faUserCircle, faCaretSquareDown, faSmileBeam, faWindowClose } from '@fortawesome/free-regular-svg-icons';
 import axios from 'axios';
 
 class ModalShow extends React.Component {
 
     state = {
         currentUser: []
-    }
-
-    follow = async () => {
-        // const followingId = ;
-        const followingEmail = this.props.post.author;
-        const token = localStorage.getItem("jwt_token");
-        const AuthStr = 'Bearer ' + token;
-        try {
-            const user = await axios.get("http://localhost:4000/users/" + this.state.currentUser.id, { headers: { 'Authorization': AuthStr } })
-            const res = await axios.post("http://localhost:4000/users/follow/" + this.props.post.author.id, user, { headers: { 'Authorization': AuthStr } })
-            this.props.onFollow(followingEmail);
-            if (res.status === 201) {
-                alert("follow success")
-                return res.data
-            }
-            else {
-                throw Error("Cannot follow!", res);
-            }
-
-            // this.props.onFollow(res.follower);
-        }
-        catch (err) {
-            console.log(err)
-            alert("Cannot follow user!")
-        }
-        window.location.href = "filter"
     }
 
     async componentDidMount() {
@@ -61,7 +35,8 @@ class ModalShow extends React.Component {
                 className={this.props.className}
             >
                 <Container fluid={true} style={{ paddingTop: "12px", paddingBottom: "12px" }}>
-                    <Row    >
+                    <Row>
+                        {/* <FontAwesomeIcon icon={faWindowClose} size="1.5em" color="red" /> */}
                         <Col md="6">
                             <CardImg className="mb-2 h-100 w-100" src={"http://localhost:4000/posts/image/" + post.imgUrl} />
                         </Col>
@@ -69,11 +44,6 @@ class ModalShow extends React.Component {
                             <div className="d-flex align-items-center">
                                 <FontAwesomeIcon icon={faUserCircle} size="1.5em" color="blue" />
                                 <Label style={{ marginLeft: "5px", marginTop: "8px", marginRight: "50px", fontSize: 13, color: "blue", fontWeight: "bold" }}>Người bán:</Label>
-                                {
-                                    this.props.isFollowing
-                                        ? <Button style={{ width: "55px", height: "30px", fontSize: "12px" }} outline color="danger" className=" pr-2" onClick={this.unfollow}>Unfollow</Button>
-                                        : <Button style={{ width: "55px", height: "30px", fontSize: "12px" }} outline color="primary" className=" pr-2" onClick={this.follow}>Follow</Button>
-                                }
                             </div>
                             <CardText className="text-center mt-2 p-2" style={{ backgroundColor: "rgba(0,0,0,0.1)", height: "40px", fontSize: 15, border: "0.2px solid grey", borderRadius: "5px" }}>{this.props.author.email}</CardText>
                             <div className="d-flex align-items-center">

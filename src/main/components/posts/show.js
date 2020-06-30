@@ -3,12 +3,14 @@ import { Button, Label, Modal, CardImg, CardText, Container, Row, Col } from 're
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle, faCaretSquareDown, faSmileBeam } from '@fortawesome/free-regular-svg-icons';
 import axios from 'axios';
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
+import io from 'socket.io-client';
 
 class ModalShow extends React.Component {
 
     state = {
-        currentUser: []
+        currentUser: [],
+        newNotification: []
     }
 
     follow = async () => {
@@ -25,14 +27,16 @@ class ModalShow extends React.Component {
                 this.props.onFollow(followingEmail.username);
                 if (res.status === 201) {
                     alert("follow success")
-                    return res.data
+                    this.socket.emit("follow", { sender: user.data.username, receiver: this.props.post.author.username })
+                    console.log("HI")
+                    // return res.data
                 }
             }
             catch (err) {
                 console.log(err)
                 alert("Cannot follow user!")
             }
-            window.location.href = "filter"
+            // window.location.href = "filter"
         }
 
     }
@@ -48,8 +52,32 @@ class ModalShow extends React.Component {
             )
     }
 
-    call = async () => {
-        return alert("Please call to: " + this.props.post.author.phone)
+    //Connetct với server nodejs, thông qua socket.io
+    componentWillMount() {
+        this.socket = io('http://localhost:4000');
+        this.socket.on('connection', (data) => {
+            console.log(data)
+        })
+        this.socket.on('newNotification', (response) => {
+            //lắng nghe khi có tin nhắn mới  
+            this.newNotification(response)
+        });
+        this.socket.on('user-connected', (res) => { alert(`${res.user} connected!`) });
+        this.socket.on('user-disconnected', (res) => { alert(`${res.user} disconnected!`) });
+    }
+
+    newNotification(value) {
+        if (value) {
+            this.state.newNotification.push({
+                sender: value.sender,
+                receiver: value.receiver,
+                notification: "Bạn đã có thêm 1 lượt theo dõi đến từ " + value.sender
+            })
+        }
+    }
+
+    call = async ()=> {
+        return alert("Vui lòng nhắn tin hoặc gọi điện đến: " +  this.props.post.author.phone);
     }
 
     chat = (user) => {
@@ -57,7 +85,6 @@ class ModalShow extends React.Component {
     }
 
     render() {
-        // console.log(this.props)
         const post = this.props.post;
         return (
 

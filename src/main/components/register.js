@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Label, Input, Form, FormGroup, Button } from 'reactstrap';
 import axios from 'axios';
-import '../css/newPost.css'
+import '../css/register.css';
 
 
 export default class Register extends Component {
@@ -15,7 +15,7 @@ export default class Register extends Component {
         listFollow: "",
         roles: "user",
         agreeRoles: false,
-        avatar:""
+        avatar: ""
     }
 
     onNameOnChange = (event) => {
@@ -77,20 +77,20 @@ export default class Register extends Component {
         })
     }
 
-    createPost = async event => {
-        event.preventDefault();
-        this.toggleLoading();
-        const user = {
-            name: this.state.name,
-            username: this.state.username,
-            password: this.state.password,
-            address: this.state.address,
-            email: this.state.email,
-            phone: this.state.phone,
-            roles: this.state.roles,
-            avatar: this.state.avatar
-        }
+    register = async event => {
         try {
+            event.preventDefault();
+            this.toggleLoading();
+            const user = {
+                name: this.state.name,
+                username: this.state.username,
+                password: this.state.password,
+                address: this.state.address,
+                email: this.state.email,
+                phone: this.state.phone,
+                roles: this.state.roles,
+                avatar: this.state.avatar
+            }
             const response = await axios.post("http://localhost:4000/users/create", user);
             if (response.status === 201) {
                 this.reset();
@@ -107,67 +107,52 @@ export default class Register extends Component {
 
     render() {
         return (
-            <div className="mx-auto mt-2 new-post" style={{ width: "400px" }}>
-                <div className="container">
-                    <h3 className="pb-20 pt-30">Register</h3>
-                    <Form onSubmit={this.createPost} onReset={this.reset}>
-                        <FormGroup>
-                            <Label for="exampleName">Họ tên</Label>
-                            <Input type="text"
-                                required
-                                name="name"
-                                placeholder="name..."
-                                value={this.state.name}
-                                onChange={this.onNameOnChange} />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="exampleName">Tài khoản</Label>
-                            <Input type="text"
-                                required
-                                name="name"
-                                placeholder="username..."
-                                value={this.state.username}
-                                onChange={this.onUsernameOnChange} />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="exampleName">Mật khẩu</Label>
-                            <Input type="password"
-                                required
-                                name="name"
-                                placeholder="password..."
-                                value={this.state.password}
-                                onChange={this.onPasswordOnChange} />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="exampleDescription">Email</Label>
-                            <Input type="email" required name="description" placeholder="email..." value={this.state.email}
-                                onChange={this.onEmailOnChange} />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="exampleDescription">Địa chỉ</Label>
-                            <Input type="text" required name="description" placeholder="address..." value={this.state.address}
-                                onChange={this.onAddressOnChange} />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="exampleStatus">Số điện thoại</Label>
-                            <Input type="text" required name="status" placeholder="phone...." value={this.state.phone}
-                                onChange={this.onPhoneOnChange} />
-                        </FormGroup>
-                        <FormGroup check>
-                            <Input type="checkbox"
-                                required
-                                name="check"
-                                id="exampleCheck"
-                                value={this.state.agreeRoles}
-                                onChange={this.onAgreeRolesOnChange} />
-                            <Label for="exampleCheck" check>Tôi đồng ý với điều khoản.</Label>
-                        </FormGroup>
-                        <Button disabled={this.state.loading} outline color="success" className="float-right" type="reset">RESET</Button>
-                        <Button disabled={this.state.loading} outline color="primary" className="float-right" type="submit">REGISTER</Button>
-                    </Form>
-                    <Button color="secondary" className="text-white" href="/">BACK</Button>
-                </div>
-
+            <div className="mx-auto mt-2 register">
+                <h3 className="mt-2 ml-3">Đăng kí</h3>
+                <Form onSubmit={this.register} onReset={this.reset}>
+                    <div className="container">
+                        <div className="row">
+                            <FormGroup className="col-12">
+                                <Label for="exampleName">Họ tên</Label>
+                                <Input type="text"
+                                    required
+                                    name="name"
+                                    placeholder="name..."
+                                    value={this.state.name}
+                                    onChange={this.onNameOnChange} />
+                            </FormGroup>
+                            <FormGroup className="col-6">
+                                <Label for="exampleName">Tài khoản</Label>
+                                <Input type="text"
+                                    required
+                                    name="name"
+                                    placeholder="username..."
+                                    value={this.state.username}
+                                    onChange={this.onUsernameOnChange} />
+                            </FormGroup>
+                            <FormGroup className="col-6">
+                                <Label for="exampleName">Mật khẩu</Label>
+                                <Input type="password"
+                                    required
+                                    name="name"
+                                    placeholder="password..."
+                                    value={this.state.password}
+                                    onChange={this.onPasswordOnChange} />
+                            </FormGroup>
+                            <FormGroup className="col-12">
+                                <Label for="exampleDescription">Email</Label>
+                                <Input type="email" required name="description" placeholder="email..." value={this.state.email}
+                                    onChange={this.onEmailOnChange} />
+                            </FormGroup>
+                            <Button disabled={this.state.loading} className="btn-register1" type="submit">Đăng kí</Button>
+                            <p className="col-12">Bấm vào đăng ký nghĩa là bạn đã đọc và đồng ý với <a href="/" style={{ color: "rgb(255, 186, 0)" }} >Điều khoản sử dụng của chúng tôi.</a></p>
+                            <p className="col-12" style={{ textAlign: "center", fontSize: "13px", color: "#ccc" }}>------------------------------hoặc------------------------------</p>
+                            <p className="col-12" style={{ textAlign: "center", fontSize: "15px" }}>
+                                Bạn đã có tài khoản? <a href="/login" style={{ color: "rgb(255, 186, 0)" }}>Đăng nhập</a>
+                            </p>
+                        </div>
+                    </div>
+                </Form>
             </div>
         )
     }

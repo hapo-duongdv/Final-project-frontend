@@ -6,16 +6,26 @@ import "../../css/filter.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faWindowClose } from '@fortawesome/free-regular-svg-icons';
+import AdSense from 'react-adsense';
+import Ads from '../ads/ads';
+import queryString from 'query-string';
+import { withRouter } from 'react-router-dom';
 
-export default class Filter extends Component {
-    state = {
-        posts: [],
-        filterCategory: "",
-        filterAddress: "",
-        isOnClick: false,
-        ModalCategoryVisible: false,
-        ModalCategoryProductVisible: false,
-        totalPosts: [],
+
+class Filter extends Component {
+    constructor(props) {
+        super(props);
+        //Khởi tạo state,
+        this.state = {
+            posts: [],
+            filterCategory: "",
+            filterAddress: "",
+            isOnClick: false,
+            ModalCategoryVisible: false,
+            ModalCategoryProductVisible: false,
+            totalPosts: [],
+        }
+        this.socket = null;
     }
 
 
@@ -61,7 +71,6 @@ export default class Filter extends Component {
         if (this.state.filterCategory && this.state.filterAddress) {
             return (item.props.post.category === filter.category && item.props.post.address === filter.address)
         } else {
-            console.log("d")
             return (item.props.post.category === filter.category || item.props.post.address === filter.address)
         }
     }
@@ -112,37 +121,48 @@ export default class Filter extends Component {
             })
     }
 
+    componentWillReceiveProps() {
+        const query = queryString.parse(this.props.location.search).category;
+        if (query) {
+            this.setState({
+                filterCategory: query
+            })
+        }
+    }
+
     render() {
-        const pageCount = Math.ceil(this.state.totalPosts.length / 3);
+        const query = queryString.parse(this.props.location.search).category;
+        const pageCount = Math.ceil(this.state.totalPosts.length / 4);
         var listPage = []
         for (var i = 1; i <= pageCount; i++) {
             listPage.push(i)
         }
-        var filter = {
-            category: this.state.filterCategory,
-            address: this.state.filterAddress
+        const demo = () => {
+            if (!this.state.isOnClick) {
+                if (query) { return <Button color="danger" onClick={this.unFilter}>Bỏ Lọc</Button> }
+                return <Button color="primary" onClick={this.clicked}>Lọc</Button>
+            }
+            else return <Button color="danger" onClick={this.unFilter}>Bỏ Lọc</Button>
         }
-        console.log(this.state.posts)
         return (
-            <div className="filter" style={{ marginLeft: "25%", marginRight: "25%", marginTop: "20px" }}>
+            <div className="filter">
                 <div className="filter-address p-3">
                     <div className="container">
                         <div className="row">
-                            <div className="col-4" style={{ border: "0.2px solid black", borderRadius: "5px", backgroundColor: "white", marginRight: "5px" }}>
+                            <div className="col-2" style={{ border: "0.2px solid black", borderRadius: "5px", backgroundColor: "white", marginRight: "5px" }}>
                                 <a onClick={this.toggleFilterProductModalVisible} style={{ marginTop: "5px" }}>Phân loại sản phẩm <FontAwesomeIcon color="grey" style={{ float: "right", marginTop: "10px" }} icon={faAngleDown} /></a>
                             </div>
-                            <div className="col-4" style={{ border: "0.2px solid black", backgroundColor: "white", borderRadius: "5px" }}>
-                                <a onClick={this.toggleFilterModalVisible} style={{ marginTop: "5px" }}>Tỉnh/Thành phố <FontAwesomeIcon color="grey" style={{ float: "right", marginTop: "10px" }} icon={faAngleDown} /></a>
+                            <div className="col-2" style={{ border: "0.2px solid black", backgroundColor: "white", borderRadius: "5px" }}>
+                                <a onClick={this.toggleFilterModalVisible} style={{ marginTop: "5px" }}>Khu vực <FontAwesomeIcon color="grey" style={{ float: "right", marginTop: "10px" }} icon={faAngleDown} /></a>
                             </div>
                             <div className="col-2">
-                                {!this.state.isOnClick ? <>
+                                {/* {(!this.state.isOnClick) ? <>
                                     <Button color="primary" onClick={this.clicked}>Lọc</Button>
                                 </> : <>
-                                        {/* <Button color="primary" onClick={this.clicked}>Lọc</Button> */}
                                         <Button color="danger" onClick={this.unFilter}>Bỏ Lọc</Button>
                                     </>
-                                }
-
+                                } */}
+                                {demo()}
                             </div>
                             <div className="col-4">
                                 <div className="d-flex">
@@ -164,7 +184,7 @@ export default class Filter extends Component {
                     </div>
                 </div>
                 <div className="container">
-                    {this.state.isOnClick ?
+                    {this.state.isOnClick || query ?
                         <>
                             <div className="row">
                                 <br></br>
@@ -182,6 +202,37 @@ export default class Filter extends Component {
                                 ).filter((item) => this.checkFilter(item)
                                 )
                                 }
+                            </div>
+                            <div className="col-4">
+                                <Ads />
+                                {/* <AdSense.Google
+                                    client='ca-pub-7292810486004926'
+                                    slot='7806394673'
+                                />
+
+                                <AdSense.Google
+                                    client='ca-pub-7292810486004926'
+                                    slot='7806394673'
+                                    style={{ width: 500, height: 300, float: 'left' }}
+                                    format=''
+                                />
+
+                                <AdSense.Google
+                                    client='ca-pub-7292810486004926'
+                                    slot='7806394673'
+                                    style={{ display: 'block' }}
+                                    layout='in-article'
+                                    format='fluid'
+                                />
+    
+                                <AdSense.Google
+                                    client='ca-pub-7292810486004926'
+                                    slot='7806394673'
+                                    style={{ display: 'block' }}
+                                    format='auto'
+                                    responsive='true'
+                                    layoutKey='-gw-1+2a-9x+5c'
+                                /> */}
                             </div>
                         </> : <>
                             <div className="row">
@@ -219,16 +270,10 @@ export default class Filter extends Component {
                                 <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Xe cộ")}>Xe cộ <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Đồ ăn, thực phẩm")}>Đồ ăn <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
-                            </li>
-                            <li className="li">
                                 <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Đồ dùng cá nhân")}>Đồ dùng cá nhân <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
                                 <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Đồ gia dụng, nội thất")}>Đồ gia dụng, nội thất <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
-                            </li >
-                            <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Đồ dùng văn phòng")}>Đồ dùng văn phòng <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li >
                             <li className="li">
                                 <NavLink style={{ color: "black" }} href="#" onClick={this.filter.bind(this, "Dụng cụ thể thao, giải trí")}>Dụng cụ thể thao, giải trí <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
@@ -253,52 +298,40 @@ export default class Filter extends Component {
                     <ModalBody>
                         <ul value={this.state.filterAddress} style={{ maxHeight: "400px", overflowY: "scroll" }} className="ul">
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hà Nội")}>Hà Nội <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hà Nội")}>Ba Đình <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hồ Chí Minh")}>Hồ Chí Minh <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hồ Chí Minh")}>Bắc Từ Liêm <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Cần Thơ")}>Cần Thơ <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Cần Thơ")}>Cầu Giấy <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Đà Nẵng")}>Đà Nẵng <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Đà Nẵng")}>Đống Đa <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hải Dương")}>Hải Dương <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hải Dương")}>Hà Đông <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li >
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hải Phòng")}>Hải Phòng <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hải Phòng")}>Hai Bà Trưng <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hưng Yên")}>Hưng Yên <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hưng Yên")}>Hoàn Kiếm <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Quảng Ninh")}>Quảng Ninh <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Quảng Ninh")}>Hoàng Mai <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hà Nam")}>Hà Nam <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hà Nam")}>Long Biên <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Thừa Thiên Huế")}>Thừa Thiên Huế <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Thừa Thiên Huế")}>Nam Từ Liêm <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Nam Định")}>Nam Định <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Nam Định")}>Tây Hồ <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Nghệ An")}>Nghệ An <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
-                            </li>
-                            <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Ninh Bình")}>Ninh Bình <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
-                            </li>
-                            <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Thái Nguyên")}>Thái Nguyên <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
-                            </li>
-                            <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Phú Thọ")}>Phú Thọ <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
-                            </li>
-                            <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Khác")}>Khác <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Nghệ An")}>Thanh Xuân <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                         </ul>
                     </ModalBody>
@@ -332,3 +365,4 @@ export default class Filter extends Component {
         )
     }
 }
+export default withRouter(Filter)

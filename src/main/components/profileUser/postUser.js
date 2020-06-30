@@ -4,6 +4,7 @@ import EditPost from '../profile/editPost';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ModalShow from '../profileUser/show';
+import avatar from '../../../header/images/member-profile-avatar_140x140.png';
 
 export default class PostUser extends Component {
     constructor(props) {
@@ -59,7 +60,7 @@ export default class PostUser extends Component {
                         <CardText className="mb-2" style={{ fontSize: 15 }}>{this.props.post.cost} đ</CardText>
                         <CardText className="mb-2" style={{ fontSize: 18 }}>{this.props.post.address}</CardText>
                         <CardText className="mb-2" style={{ fontSize: 18 }}>{this.props.post.status}</CardText>
-                        <NavLink href="#" className="mb-2 p-0 pr-2" style={{ fontSize: 15}} onClick={this.toggleShowModalVisible}>Xem thêm</NavLink>
+                        <NavLink href="#" className="mb-2 p-0 pr-2" style={{ fontSize: 15 }} onClick={this.toggleShowModalVisible}>Xem thêm</NavLink>
                     </CardBody>
                 </Card>
                 <ModalShow

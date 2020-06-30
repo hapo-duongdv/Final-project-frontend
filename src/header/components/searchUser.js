@@ -7,12 +7,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { CardText, Container, Row, Col, NavLink } from 'reactstrap'
+import avatar from '../images/member-profile-avatar_140x140.png';
 
 class Search extends Component {
     state = {
         searchResult: [],
         total: 0,
-        user :""
+        user: ""
     }
     async componentDidMount() {
         this.fetchSearchResult()
@@ -39,7 +40,7 @@ class Search extends Component {
         }
     }
 
-    searchProfileUser = async(id) => {
+    searchProfileUser = async (id) => {
         window.location.href = `/profileUser?q=${id}`
     }
 
@@ -52,7 +53,9 @@ class Search extends Component {
                     <Row>
                         {this.state.searchResult.map((result, i) => {
                             return <Col md="6"> <div className="mt-2 d-flex mb-2" style={{ height: "80px", backgroundColor: "rgba(0,0,0,0.1)", borderRadius: "5px" }}>
-                                <img src={"http://localhost:4000/users/image/" + result.avatar} style={{ height: "60px", width: "60px", borderRadius: "50%", marginTop: "10px", marginLeft: "10px" }} />
+                                {!this.state.user.avatar || !this.state.user.avatar === null || "" ? <>
+                                    <img src={avatar} style={{ height: "60px", width: "60px", borderRadius: "50%", marginTop: "10px", marginLeft: "10px" }} /> </> :
+                                    <img src={"http://localhost:4000/users/image/" + result.avatar} style={{ height: "60px", width: "60px", borderRadius: "50%", marginTop: "10px", marginLeft: "10px" }} />}
                                 <div>
                                     <div className=" d-flex ml-2 mt-3">
                                         <FontAwesomeIcon icon={faUser} size="1.5em" color="blue" />

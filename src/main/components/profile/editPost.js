@@ -19,6 +19,8 @@ export default class EditPost extends Component {
             cost: "",
             address: "",
             imgFile: null,
+            isBought: false,
+            check: ""
         }
     }
 
@@ -64,6 +66,12 @@ export default class EditPost extends Component {
         })
     }
 
+    onIsBoughtOnChange = event => {
+        this.setState({
+            check: event.target.value
+        })
+    }
+
     async onSubmit(e) {
         e.preventDefault();
         this.toggleLoading();
@@ -76,6 +84,11 @@ export default class EditPost extends Component {
                 data: bodyFormData,
                 headers: { 'Content-Type': 'multipart/form-data' }
             })
+            if (this.state.check === "đã bán") {
+                this.setState({
+                    isBought: !this.state.isBought
+                })
+            }
             const obj = {
                 title: this.state.title,
                 status: this.state.status,
@@ -83,6 +96,7 @@ export default class EditPost extends Component {
                 cost: this.state.cost,
                 address: this.state.address,
                 imgUrl: image.data.filename,
+                isBought: this.state.isBought
             };
             const token = localStorage.getItem("jwt_token");
             const AuthStr = 'Bearer ' + token;
@@ -106,12 +120,11 @@ export default class EditPost extends Component {
             description: this.props.post.description,
             status: this.props.post.status,
             cost: this.props.post.cost,
-            address: this.props.post.address
+            address: this.props.post.address,
         })
     }
 
     render() {
-        // console.log(this.props.post)
         return (
 
             <Modal
@@ -164,8 +177,17 @@ export default class EditPost extends Component {
                                 value={this.state.address}
                                 onChange={this.onAddressOnChange} />
                         </FormGroup>
+                        <FormGroup className="col-6">
+                            <Label for="exampleStatus">Đã bán?</Label>
+                            <Input type="select" required name="status" placeholder="status...." value={this.state.check}
+                                onChange={this.onIsBoughtOnChange}>
+                                <option>còn hàng</option>
+                                <option>đã bán</option>
+
+                            </Input>
+                        </FormGroup>
                         <FormGroup>
-                        <Label for="examplePhone">Cập nhật ảnh</Label>
+                            <Label for="examplePhone">Cập nhật ảnh</Label>
                             <Input
                                 type="file"
                                 name="file"

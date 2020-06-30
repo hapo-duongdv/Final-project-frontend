@@ -7,7 +7,7 @@ import {
     Input
 } from "reactstrap";
 import '../css/login.css';
-import { withRouter, Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 
 class Login extends Component {

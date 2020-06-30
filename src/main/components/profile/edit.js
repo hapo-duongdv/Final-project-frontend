@@ -126,13 +126,23 @@ export default class Edit extends Component {
                             </Col>
                         </Row>
                         <FormGroup>
-                            <Label for="exampleAddress">Address</Label>
-                            <Input type="text"
-                                name="address"
-                                placeholder="1234 Main St..."
-                                value={this.state.address}
-                                onChange={this.onAddressOnChange} />
-                        </FormGroup>
+                                <Label for="exampleDescription">Địa chỉ</Label>
+                                <Input type="select" required name="address" placeholder="address..." value={this.state.address}
+                                    onChange={this.onAddressOnChange} >
+                                    <option>Ba Đình</option>
+                                    <option>Bắc Từ Liêm	</option>
+                                    <option>Cầu Giấy</option>
+                                    <option>Đống Đa</option>
+                                    <option>Hà Đông</option>
+                                    <option>Hai Bà Trưng</option>
+                                    <option>Hoàn Kiếm</option>
+                                    <option>Hoàng Mai</option>
+                                    <option>Long Biên</option>
+                                    <option>Nam Từ Liêm</option>
+                                    <option>Tây Hồ</option>
+                                    <option>Thanh Xuân</option>
+                                </Input>
+                            </FormGroup>
                         <FormGroup>
                             <Label for="exampleEmail">Email</Label>
                             <Input type="email"
@@ -153,7 +163,6 @@ export default class Edit extends Component {
                         <Label for="exampleStatus">Cập nhật avatar</Label>
                             <Input
                                 type="file"
-                                required
                                 name="file"
                                 id="exampleFile"
                                 accept=".png, .jpg"

@@ -13,9 +13,25 @@
 .list-item-category {
     height: 120px;
     margin-right: 8px;
-    margin-top: 5px;
     border-radius: 3px;
     margin-left: 8px;
+    margin-top: 10px;
+}
+
+.list-item-category a {
+    background-color: white;
+    color: black;
+    margin-top: 90px;
+    font-weight: bold;
+    border-radius: 5px;
+    height: 20px;
+    text-align: center;
+    width: inherit;
+}
+
+.list-category {
+    height: 310px;
+    background-color: white;
 }
 
 .image {
@@ -61,8 +77,35 @@
 }
 
 .image-8 {
-    background-image: url("../images/37320887-70cba60a-26a8-11e8-82b4-cc0048d32c89.jpg");
+    background-image: url("../images/sach.jpg");
     background-position: center;
     background-size: cover;
+}
+
+.btn-main{
+    margin-left: 350px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 200px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none 
+}
+
+.btn-main:hover {
+    background-color: blue;
+    color: white;
+}
+
+.notification {
+    width: 400px;
+    background-color: white;
+    position: absolute;
+    z-index: 1;
+    box-shadow: 2px 2px 10px 0px #aaaaaa;
+}
+
+.notification-item {
+    border-bottom: 0.2px solid #aaaaaa;
 }
 

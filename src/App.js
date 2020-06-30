@@ -12,9 +12,8 @@ import Profile from './main/components/profile';
 import Chat from './chat/components/index';
 import Search from './header/components/searchUser';
 import ProfileUser from './main/components/profileUser/profileUser';
-import ManagementPosts from './main/components/admin/posts/index'
-import ManagementMembers from './main/components/admin/index';
 import SearchPosts from './header/components/searchPosts';
+import Ads from './main/components/ads/ads'
 
 class App extends React.Component {
 
@@ -137,12 +136,11 @@ class App extends React.Component {
             <Route exact path='/' render={() =>
               <Main />
             } />
-            <Route path="/new-post" render={() => <CreatePost authedUser={this.state.authedUser !== null} />} />
+            <Route path="/new-post" render={() => <CreatePost authedUser={this.state.authedUser !== null} user={this.state.authedUser} />} />
             <Route path="/register" component={Register} />
             <Route path="/chat" component={Chat} />
-            <Route path="/admin-users" component={ManagementMembers} />
-            <Route path="/admin-posts" component={ManagementPosts} />
             <Route path="/search" component={Search} />
+            <Route path="/ads" component={Ads} />
             <Route path="/searchPost" component={SearchPosts} />
             <Route path="/profile" render={() => <Profile authedUser={this.state.authedUser} />} />
             <Route path="/profileUser" render={() => <ProfileUser authedUser={this.state.authedUser} listFollowing={this.state.list_following} />} />

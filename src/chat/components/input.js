@@ -21,15 +21,6 @@ export default class Input extends React.Component {
                         <div className='text'>Send</div>
                    </div>                   
                </div>
-               {/* <div className="bottom_wrapper">
-                   <div  className="message_input_wrapper">
-                        <input ref="messageInput" type="text" className="message_input" placeholder="Type your message here" onKeyUp={this.checkEnter.bind(this)} />
-                   </div>
-                   <div className="send_message" onClick={() => this.props.sendUser(this.refs.messageInput)} ref="inputMessage" >
-                        <div className='icon'></div>
-                        <div className='text'>Send</div>
-                   </div>                   
-               </div> */}
            </div>
         )
     }

@@ -66,7 +66,7 @@
   .messages .message {
     clear: both;
     overflow: hidden;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
     transition: all 0.5s linear;
     opacity: 0;
   }
@@ -105,17 +105,17 @@
     opacity: 1;
   }
   .messages .message .avatar {
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: inline-block;
   }
   .messages .message .text_wrapper {
     display: inline-block;
-    padding: 20px;
+    padding: 10px;
     border-radius: 6px;
     width: calc(100% - 85px);
-    min-width: 100px;
+    min-width: 80px;
     position: relative;
   }
   .messages .message .text_wrapper::after, .messages .message .text_wrapper:before {
@@ -128,16 +128,19 @@
     pointer-events: none;
   }
   .messages .message .text_wrapper::after {
+    display: none;
     border-width: 13px;
     margin-top: 0px;
   }
   .messages .message .text_wrapper::before {
     border-width: 15px;
     margin-top: -2px;
+    display: none;
   }
   .messages .message .text_wrapper .text {
-    font-size: 18px;
+    font-size: 13px;
     font-weight: 300;
+    word-wrap: break-word;
   }
   
   .bottom_wrapper {
@@ -192,4 +195,10 @@
   
   .message_template {
     display: none;
+  }
+
+  .menu {
+    width: 360px;
+    height: 500px;
+    background-color: white;
   }
