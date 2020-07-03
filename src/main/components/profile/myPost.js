@@ -85,7 +85,6 @@ export default class MyPost extends Component {
 
 
     render() {
-        console.log(this.props.post.isShow)
         return (
             <> {this.props.post.isShow &&
                 <div className="col-md-4" style={{ marginTop: 10, marginBottom: 10 }}>
@@ -94,6 +93,9 @@ export default class MyPost extends Component {
                             <CardImg className="mb-2" style={{ width: "175px", height: "150px" }} src={"http://localhost:4000/posts/image/" + this.props.post.imgUrl} />
                             <CardText className="mb-2" style={{ fontSize: 18 }}>{this.props.post.title}</CardText>
                             <CardText className="mb-2" style={{ fontSize: 15 }}>{this.cost(this.props.post.cost)} đ</CardText>
+                            {this.props.post.isBought === false
+                                    ? <CardText href="#" className="p-0 rounded" style={{ fontSize: 15, color:"blue" }}>còn hàng</CardText>
+                                    : <CardText href="#" className="p-0 rounded" style={{ fontSize: 15, color:"red" }}>hết hàng</CardText>}
                             <div className="d-flex">
                                 <NavLink href="#" className="mb-2 p-0 pr-2" style={{ fontSize: 15, borderRight: "0.2px solid" }} onClick={this.toggleShowModalVisible}>Xem thêm</NavLink>
                                 <NavLink href="#" className="mb-2 p-0 ml-2" style={{ fontSize: 15 }} onClick={this.toggleModalEditPostVisible}>Chỉnh sửa</NavLink>

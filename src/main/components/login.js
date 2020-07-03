@@ -35,11 +35,10 @@ class Login extends Component {
 
     login = async (payload) => {
         try {
-            console.log("login")
             let response = await this.props.onLogin(payload);
-            if (response.status === 201) {
+            if (response && response.status === 201) {
                 alert("Login Succesful");
-                window.location.href="/"
+                window.location.href = "/"
             } else {
                 alert("Invalid username/password!");
             }
@@ -82,12 +81,12 @@ class Login extends Component {
                             placeholder="  nhập mật khẩu..."
                         />
                     </FormGroup>
-                    <FormGroup check>
+                    {/* <FormGroup check>
                         <Input type="checkbox" onChange={this.onRemember_meOnChange} /><span style={{ fontSize: "12px" }}>Ghi nhớ tài khoản</span>
-                    </FormGroup>
+                    </FormGroup> */}
                 </Form>
                 <Button onClick={this.onLogin} className="btn-login" color="primary">Đăng nhập</Button>
-                <Button className="btn-forgotPassword" color="primary" >Quên mật khẩu?</Button>
+                <Button  href="/forgotPassword" className="btn-forgotPassword" color="primary" ><a style={{fontSize:"16px", paddingTop:"3px", color:"white", fontWeight:"bold"}}>Quên mật khẩu?</a></Button>
                 <p style={{ textAlign: "center", fontSize: "13px", color: "#ccc" }}>------------------------------hoặc------------------------------</p>
                 <div className="list-btn" style={{ display: "flex", justifyContent: "between" }} >
                     <div >

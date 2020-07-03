@@ -14,6 +14,7 @@ import Search from './header/components/searchUser';
 import ProfileUser from './main/components/profileUser/profileUser';
 import SearchPosts from './header/components/searchPosts';
 import Ads from './main/components/ads/ads'
+import ForgotPassword from './main/components/forgotPassword';
 
 class App extends React.Component {
 
@@ -90,6 +91,10 @@ class App extends React.Component {
     const token = localStorage.getItem("jwt_token");
     const currentUser = (await this.getCurrentUser(token));
     const user = await this.getInforUser(currentUser.id);
+    this.setState({
+      authedUser: user.data,
+      roles: user.data.roles,
+    })
     axios.defaults.headers.common["Authorization"] = `Bearer ${user.data.token}`
     const users = await axios.get('http://localhost:4000/users/' + user.data.id, { headers: { 'Authorization': 'Bearer ' + token } });
     for (var following of users.data.followers) {
@@ -101,10 +106,6 @@ class App extends React.Component {
       }
 
     }
-    this.setState({
-      authedUser: user.data,
-      roles: user.data.roles,
-    })
   }
 
   getInforUser = async id => {
@@ -128,6 +129,7 @@ class App extends React.Component {
 
 
   render() {
+    // console.log(this.state.authedUser)
     return (
       <>
         <>
@@ -138,12 +140,13 @@ class App extends React.Component {
             } />
             <Route path="/new-post" render={() => <CreatePost authedUser={this.state.authedUser !== null} user={this.state.authedUser} />} />
             <Route path="/register" component={Register} />
+            <Route path="/forgotPassword" component={ForgotPassword} />
             <Route path="/chat" component={Chat} />
             <Route path="/search" component={Search} />
             <Route path="/ads" component={Ads} />
             <Route path="/searchPost" component={SearchPosts} />
-            <Route path="/profile" render={() => <Profile authedUser={this.state.authedUser} />} />
-            <Route path="/profileUser" render={() => <ProfileUser authedUser={this.state.authedUser} listFollowing={this.state.list_following} />} />
+            <Route path="/profile" render={() => <Profile authedUser={this.state.authedUser} listFollowing={this.state.list_following}  listFollowing={this.state.list_following} onFollow={this.follow} onUnfollow={this.unfollow} />} />
+            <Route path="/profileUser" render={() => <ProfileUser authedUser={this.state.authedUser} listFollowing={this.state.list_following} onFollow={this.follow} onUnfollow={this.unfollow} onFollowPost={this.followPost} />} />
             <Route path="/login" render={() => <Login onLogin={this.login} />} />
             <Route path="/filter" render={() => <Filter authedUser={this.state.authedUser} listFollowing={this.state.list_following} listFollowingPost={this.state.list_followingPost} onFollow={this.follow} onUnfollow={this.unfollow} onFollowPost={this.followPost} />} />
             <Footer />

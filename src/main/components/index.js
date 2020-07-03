@@ -3,10 +3,10 @@ import '../css/index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button } from 'reactstrap';
 import Slideshow from './slideshow/slideshow';
-import img1 from '../images/BANNER.png';
-import img2 from '../images/Untitled1.png';
-import img3 from '../images/img3.jpg';
-import img4 from '../images/img4.jpg';
+import img1 from '../images/img1.png';
+import img2 from '../images/img2.png';
+import img3 from '../images/img3.png';
+import img4 from '../images/img4.png';
 import logo from '../../header/images/logo2.PNG'
 
 const collection = [
@@ -26,7 +26,7 @@ export default class Main extends Component {
                 <div className="slideshow" style={{ width: "100%px", margin: "auto", padding: "20px", backgroundColor: "white" }}>
                     <Slideshow
                         input={collection}
-                        ratio={`3:0.7`}
+                        ratio={`3:0.8`}
                         mode={`automatic`}
                         timeout={`3000`}
                     />

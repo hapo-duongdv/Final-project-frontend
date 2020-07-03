@@ -37,13 +37,17 @@ class ProfileUser extends Component {
     render() {
         const query = queryString.parse(this.props.location.search).q;
         const created_at = (String)(this.state.user.created_at).slice(0, 10)
+        if (this.state.user.followers && this.state.user.following) {
+            var followers = this.state.user.followers.length;
+            var following = this.state.user.following.length;
+        }
         return (
             <div className="profile">
                 <p>Trang cá nhân của {this.state.user.name}</p>
                 <div className="infor d-flex " style={{ backgroundColor: "rgba(0,0,0,0.1", height: "150px" }}>
                     <div className="infor-left col-6 h-100 d-flex flex-row" style={{ borderRight: "0.1px solid white" }}>
                         <div className="avatar p-3">
-                            {!this.state.user.avatar === "" ? <>
+                            {!this.state.user.avatar || !this.state.user.avatar === null || "" ? <>
                                 <img src={avatar} style={{ width: "80px", borderRadius: "50%", }} />
                             </> : <>
                                     <img src={"http://localhost:4000/users/image/" + this.state.user.avatar} style={{ width: "80px", borderRadius: "50%", }} />
@@ -52,9 +56,8 @@ class ProfileUser extends Component {
                         </div>
                         <div className="p-3">
                             <p style={{ fontSize: "20px", fontWeight: "bold" }}>{this.state.user.name}</p>
-                            <span style={{ fontSize: "13px" }}><strong>0</strong> Người theo dõi</span>
-                            <span style={{ fontSize: "13px", marginLeft: "12px" }}><strong>1</strong> Đang theo dõi</span>
-                            {/* <button onClick={this.toggleModalEditVisible} style={{ borderRadius: "5px", marginTop: "10px", fontSize: "13px" }}>Chỉnh sửa thông tin cá nhân</button> */}
+                            <span style={{ fontSize: "13px" }}><strong>{following}</strong> Người theo dõi</span>
+                            <span style={{ fontSize: "13px", marginLeft: "12px" }}><strong>{followers}</strong> Đang theo dõi</span>
                         </div>
                     </div>
                     <div className="infor-right col-6 h-100 " style={{ borderRight: "0.1px solid white" }}>
@@ -77,7 +80,7 @@ class ProfileUser extends Component {
                     </div>
                 </div>
                 <div className="your-post" style={{ backgroundColor: "rgba(0,0,0,0.1", marginTop: "15px" }}>
-                    <p className="p-2"><strong>Bài đăng của bạn</strong></p>
+                    <p className="p-2"><strong>Bài đăng</strong></p>
                     <div className="container">
                         <div className="row">
                             {this.state.posts === [] ? <>
@@ -91,13 +94,21 @@ class ProfileUser extends Component {
                                     </div></div>
                             </> : <>
                                     {this.state.posts.map((post, i) => {
-                                        return <PostUser author={this.state.user} post={post} key={i} listFollow={this.props.listFollowing} />
+                                        return <PostUser
+                                            isFollowPost={this.props.listFollowingPost ? this.props.listFollowingPost.indexOf(post.title > -1) : []}
+                                            onFollow={this.props.onFollow}
+                                            onFollowPost={this.props.onFollowPost}
+                                            onUnfollow={this.props.onUnfollow}
+                                            author={this.state.user}
+                                            post={post} key={i}
+                                            listFollow={this.props.listFollowing} />
                                     })}
                                 </>
                             }
                         </div>
                     </div>
                 </div>
+
             </div>
         )
     }

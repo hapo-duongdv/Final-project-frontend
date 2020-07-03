@@ -151,6 +151,7 @@ class Header extends Component {
                             {this.state.isOpen && <div className="notification">
                                 <div style={{ borderBottom: "0.2px solid #aaaaaa", textAlign: "center", height: "35px", marginTop: "10px" }}>
                                     <span style={{ fontSize: "18px", fontWeight: "bold" }}>Thông báo</span>
+                                    
                                 </div>
                                 <div className="d-flex m-2">
                                     <img style={{ width: "50px", height: "50px" }} src={avatarTOT} />
@@ -160,7 +161,6 @@ class Header extends Component {
                                                 return <div className="container w-100 d-flex flex-column">
                                                     <div className="row">
                                                         <p style={{ borderBottom: "0.2px solid #aaaaaa" }} className="notification-item ml-3 mr-2 col-12">{item.notification}</p>
-
                                                     </div>
                                                 </div>
 

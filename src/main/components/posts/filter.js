@@ -198,7 +198,6 @@ class Filter extends Component {
                                         onFollowPost={this.props.onFollowPost}
                                         onUnfollow={this.props.onUnfollow}
                                         authedUser={this.props.authedUser} />
-
                                 ).filter((item) => this.checkFilter(item)
                                 )
                                 }
@@ -298,40 +297,40 @@ class Filter extends Component {
                     <ModalBody>
                         <ul value={this.state.filterAddress} style={{ maxHeight: "400px", overflowY: "scroll" }} className="ul">
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hà Nội")}>Ba Đình <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Ba Đình")}>Ba Đình <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hồ Chí Minh")}>Bắc Từ Liêm <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Bắc Từ Liêm")}>Bắc Từ Liêm <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Cần Thơ")}>Cầu Giấy <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Cầu Giấy")}>Cầu Giấy <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Đà Nẵng")}>Đống Đa <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Đống Đa")}>Đống Đa <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hải Dương")}>Hà Đông <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hà Đông")}>Hà Đông <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li >
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hải Phòng")}>Hai Bà Trưng <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hai Bà Trưng")}>Hai Bà Trưng <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hưng Yên")}>Hoàn Kiếm <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hoàn Kiếm")}>Hoàn Kiếm <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Quảng Ninh")}>Hoàng Mai <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hoàng Mai")}>Hoàng Mai <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Hà Nam")}>Long Biên <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Long Biên")}>Long Biên <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Thừa Thiên Huế")}>Nam Từ Liêm <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Nam Từ Liêm")}>Nam Từ Liêm <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Nam Định")}>Tây Hồ <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Tây Hồ")}> Tây Hồ<FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                             <li className="li">
-                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Nghệ An")}>Thanh Xuân <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
+                                <NavLink style={{ color: "black" }} href="#" onClick={this.filterAddress.bind(this, "Thanh Xuân")}>Thanh Xuân <FontAwesomeIcon color="grey" style={{ float: "right" }} icon={faAngleRight} /></NavLink>
                             </li>
                         </ul>
                     </ModalBody>

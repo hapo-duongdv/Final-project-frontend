@@ -92,6 +92,7 @@ export default class Register extends Component {
                 avatar: this.state.avatar
             }
             const response = await axios.post("http://localhost:4000/users/create", user);
+            console.log(response.data)
             if (response.status === 201) {
                 this.reset();
                 alert("Successfully!")

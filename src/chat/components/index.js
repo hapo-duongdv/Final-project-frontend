@@ -1,7 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
 import Messages from './mesage-list';
-import Input from './input';
 import _map from 'lodash/map';
 import io from 'socket.io-client';
 import axios from 'axios';
@@ -13,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPhoneAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { } from '@fortawesome/free-regular-svg-icons';
 import avatarUser from '../../header/images/member-profile-avatar_140x140.png'
+import Input from './input';
 
 class Chat extends React.Component {
     constructor(props) {
@@ -26,7 +26,8 @@ class Chat extends React.Component {
             room: "",
             chatHistory: [],
             listUser: [],
-            inforUserChat: []
+            inforUserChat: [],
+            userChat: []
         }
         this.socket = null;
     }
@@ -39,6 +40,10 @@ class Chat extends React.Component {
         const userCurrent = await axios.get(`http://localhost:4000/users/${user.data.id}`, { headers: { 'Authorization': AuthStr } })
         this.setState({
             user: userCurrent.data
+        })
+        const userChat1 = await axios.get(`http://localhost:4000/users/search/${userChat}`, { headers: { 'Authorization': AuthStr } })
+        this.setState({
+            userChat: userChat1.data
         })
         const chatHistory = await axios.get(`http://localhost:4000/chat/find/${userCurrent.data.username}/${userChat}`, { headers: { 'Authorization': AuthStr } })
         this.setState({
@@ -135,6 +140,7 @@ class Chat extends React.Component {
 
     render() {
         const userChat = queryString.parse(this.props.location.search).user
+        console.log(this.state.userChat)
         return (
             <div className="app__content" style={{ height: "600px" }}>
                 {/* kiểm tra xem user đã tồn tại hay chưa, nếu tồn tại thì render form chat, chưa thì render form login */}
@@ -160,10 +166,11 @@ class Chat extends React.Component {
                             )}
                         </div>
                         <div className="chat_window" style={{ marginTop: "10px" }}>
+                            <p>Chat với {userChat}</p>
                             {/* danh sách message */}
                             {userChat && <div className="content">
                                 {this.state.chatHistory.length !== 0 && <Messages user={this.state.user} history={this.state.chatHistory.length !== 0} messages={this.state.chatHistory} typing={this.state.typing} />}
-                                <Messages user={this.state.user} messages={this.state.messages} typing={this.state.typing} />
+                                <Messages user={this.state.user} userChat={this.state.userChat} messages={this.state.messages} typing={this.state.typing} />
                                 <Input sendMessage={this.sendnewMessage.bind(this)} />
                             </div>}
                         </div>

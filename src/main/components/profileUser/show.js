@@ -3,37 +3,68 @@ import { Button, Label, Modal, CardImg, CardText, Container, Row, Col } from 're
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle, faCaretSquareDown, faSmileBeam } from '@fortawesome/free-regular-svg-icons';
 import axios from 'axios';
+import io from 'socket.io-client';
 
 class ModalShow extends React.Component {
 
     state = {
-        currentUser: []
+        currentUser: [],
+        newNotification: []
     }
 
     follow = async () => {
-        // const followingId = ;
         const followingEmail = this.props.post.author;
         const token = localStorage.getItem("jwt_token");
         const AuthStr = 'Bearer ' + token;
-        try {
-            const user = await axios.get("http://localhost:4000/users/" + this.state.currentUser.id, { headers: { 'Authorization': AuthStr } })
-            const res = await axios.post("http://localhost:4000/users/follow/" + this.props.post.author.id, user, { headers: { 'Authorization': AuthStr } })
-            this.props.onFollow(followingEmail);
-            if (res.status === 201) {
-                alert("follow success")
-                return res.data
+        if (this.state.currentUser.length === 0) {
+            alert("Cần đăng nhập!")
+        } else {
+            try {
+                const user = await axios.get("http://localhost:4000/users/" + this.state.currentUser.id, { headers: { 'Authorization': AuthStr } })
+                const follow = { "id": user.data.id }
+                const res = await axios.post("http://localhost:4000/followers/" + this.props.post.author.id, follow, { headers: { 'Authorization': AuthStr } })
+                this.props.onFollow(followingEmail.username);
+                if (res.status === 201) {
+                    alert("follow success")
+                    this.socket.emit("follow", { sender: user.data.username, receiver: this.props.post.author.username })
+                }
             }
-            else {
-                throw Error("Cannot follow!", res);
+            catch (err) {
+                console.log(err)
+                alert(err)
             }
+            // window.location.href = "filter"
+        }
 
-            // this.props.onFollow(res.follower);
+    }
+
+    unfollow = async () => {
+        const followingEmail = this.props.post.author;
+        const token = localStorage.getItem("jwt_token");
+        const AuthStr = 'Bearer ' + token;
+        if (this.state.currentUser.length === 0) {
+            alert("Cần đăng nhập!")
+        } else {
+            try {
+                const user = await axios.get("http://localhost:4000/users/" + this.state.currentUser.id, { headers: { 'Authorization': AuthStr } })
+                for (var follow of user.data.followers) {
+                    const res = await axios.get(`http://localhost:4000/followers/${follow.id}`, { headers: { 'Authorization': AuthStr } })
+                    if (res.data.userFollowing.username === followingEmail.username) {
+                        const response = await axios.delete(`http://localhost:4000/followers/${res.data.id}`, { headers: { 'Authorization': AuthStr } })
+                        if (response.status === 200) {
+                            alert("successfully")
+                        }
+                    }
+                }
+                this.props.onUnfollow(followingEmail.username);
+            }
+            catch (err) {
+                console.log(err)
+                alert(err)
+            }
+            // window.location.href = "filter"
         }
-        catch (err) {
-            console.log(err)
-            alert("Cannot follow user!")
-        }
-        window.location.href = "filter"
+
     }
 
     async componentDidMount() {
@@ -47,13 +78,44 @@ class ModalShow extends React.Component {
             )
     }
 
+     //Connetct với server nodejs, thông qua socket.io
+     componentWillMount() {
+        this.socket = io('http://localhost:4000');
+        this.socket.on('connection', (data) => {
+            console.log(data)
+        })
+        this.socket.on('newNotification', (response) => {
+            //lắng nghe khi có tin nhắn mới  
+            this.newNotification(response)
+        });
+        this.socket.on('user-connected', (res) => { alert(`${res.user} connected!`) });
+        this.socket.on('user-disconnected', (res) => { alert(`${res.user} disconnected!`) });
+    }
+
+    newNotification(value) {
+        if (value) {
+            this.state.newNotification.push({
+                sender: value.sender,
+                receiver: value.receiver,
+                notification: "Bạn đã có thêm 1 lượt theo dõi đến từ " + value.sender
+            })
+        }
+    }
+
     call = async () => {
-        return alert("Please call to: " + this.props.author.phone)
+        return alert("Vui lòng nhắn tin hoặc gọi điện đến: " + this.props.post.author.phone);
+    }
+
+    chat = (user) => {
+        this.props.history.push(`/chat?user=${user}`)
     }
 
     render() {
         const post = this.props.post;
-        const isFollow = this.props.listFollow.indexOf(post.username)
+        if (this.props.post.author) {
+            var author = this.props.post.author;
+            var isFollow = this.props.listFollow.indexOf(author.username) === -1;
+        }
         return (
 
             <Modal
@@ -70,12 +132,12 @@ class ModalShow extends React.Component {
                                 <FontAwesomeIcon icon={faUserCircle} size="1.5em" color="blue" />
                                 <Label style={{ marginLeft: "5px", marginTop: "8px", marginRight: "50px", fontSize: 13, color: "blue", fontWeight: "bold" }}>Người bán:</Label>
                                 {
-                                    isFollow
+                                    !isFollow
                                         ? <Button style={{ width: "70px", height: "30px", fontSize: "12px" }} outline color="danger" className=" pr-2" onClick={this.unfollow}>Unfollow</Button>
                                         : <Button style={{ width: "55px", height: "30px", fontSize: "12px" }} outline color="primary" className=" pr-2" onClick={this.follow}>Follow</Button>
                                 }
                             </div>
-                            <CardText className="text-center mt-2 p-2" style={{ backgroundColor: "rgba(0,0,0,0.1)", height: "40px", fontSize: 15, border: "0.2px solid grey", borderRadius: "5px" }}>{this.props.author.email}</CardText>
+                            <CardText className="text-center mt-2 p-2" style={{ backgroundColor: "rgba(0,0,0,0.1)", height: "40px", fontSize: 15, border: "0.2px solid grey", borderRadius: "5px" }}>{author ? author.email : ""}</CardText>
                             <div className="d-flex align-items-center">
                                 <FontAwesomeIcon icon={faCaretSquareDown} size="1.5em" color="blue" />
                                 <Label style={{ marginLeft: "5px", marginTop: "8px", marginRight: "50px", fontSize: 13, color: "blue", fontWeight: "bold" }}>Sản phẩm: </Label>

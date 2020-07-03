@@ -28,13 +28,40 @@ class ModalShow extends React.Component {
                 if (res.status === 201) {
                     alert("follow success")
                     this.socket.emit("follow", { sender: user.data.username, receiver: this.props.post.author.username })
-                    console.log("HI")
-                    // return res.data
                 }
             }
             catch (err) {
                 console.log(err)
                 alert("Cannot follow user!")
+            }
+            // window.location.href = "filter"
+        }
+
+    }
+
+    unfollow = async () => {
+        const followingEmail = this.props.post.author;
+        const token = localStorage.getItem("jwt_token");
+        const AuthStr = 'Bearer ' + token;
+        if (this.state.currentUser.length === 0) {
+            alert("Cần đăng nhập!")
+        } else {
+            try {
+                const user = await axios.get("http://localhost:4000/users/" + this.state.currentUser.id, { headers: { 'Authorization': AuthStr } })
+                for (var follow of user.data.followers) {
+                    const res = await axios.get(`http://localhost:4000/followers/${follow.id}`, { headers: { 'Authorization': AuthStr } })
+                    if(res.data.userFollowing.username === followingEmail.username){
+                        const response = await axios.delete(`http://localhost:4000/followers/${res.data.id}`, { headers: { 'Authorization': AuthStr } })
+                        if(response.status === 200){
+                            alert("successfully")
+                        }
+                    }
+                }
+                this.props.onUnfollow(followingEmail.username);
+            }
+            catch (err) {
+                console.log(err)
+                alert(err)
             }
             // window.location.href = "filter"
         }
@@ -76,8 +103,8 @@ class ModalShow extends React.Component {
         }
     }
 
-    call = async ()=> {
-        return alert("Vui lòng nhắn tin hoặc gọi điện đến: " +  this.props.post.author.phone);
+    call = async () => {
+        return alert("Vui lòng nhắn tin hoặc gọi điện đến: " + this.props.post.author.phone);
     }
 
     chat = (user) => {
@@ -86,6 +113,11 @@ class ModalShow extends React.Component {
 
     render() {
         const post = this.props.post;
+        // console.log(this.props.post)
+        var cost = this.props.post.cost
+        while (/(\d+)(\d{3})/.test(cost.toString())) {
+            cost = cost.toString().replace(/(\d+)(\d{3})/, '$1' + '.' + '$2');
+        }
         return (
 
             <Modal
@@ -119,7 +151,7 @@ class ModalShow extends React.Component {
                             <ul style={{ fontSize: "20px", paddingLeft: "5px", backgroundColor: "rgba(0, 0, 0, 0.05)", borderBottom: "0.2px solid grey" }}> Thông tin chi tiết :
                                 <div className="d-flex align-items-center">
                                     <FontAwesomeIcon icon={faSmileBeam} size="1.5em" color="black" />
-                                    <li className="mb-2 ml-3" style={{ fontSize: 15, listStyle: "none" }}><strong>Giá : </strong> {post.cost}đ</li>
+                                    <li className="mb-2 ml-3" style={{ fontSize: 15, listStyle: "none" }}><strong>Giá : </strong> {cost}đ</li>
                                 </div>
                                 <div className="d-flex align-items-center">
                                     <FontAwesomeIcon icon={faSmileBeam} size="1.5em" color="black" />

@@ -9,6 +9,7 @@ import Edit from './edit';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
 import MyPost from './myPost';
+import PostUser from '../profileUser/postUser';
 
 class Profile extends Component {
     state = {
@@ -38,6 +39,10 @@ class Profile extends Component {
         const query = queryString.parse(this.props.location.search).q;
         var post = this.state.posts.filter(item => item.title === query);
         var created_at = String(this.state.user.created_at).slice(0, 10);
+        if (this.state.user.followers && this.state.user.following) {
+            var followers = this.state.user.followers.length;
+            var following = this.state.user.following.length;
+        }
         return (
             <div className="profile">
                 <p>Trang cá nhân của {this.state.user.name}</p>
@@ -47,14 +52,14 @@ class Profile extends Component {
                             {!this.state.user.avatar || !this.state.user.avatar === null || "" ? <>
                                 <img src={avatar} style={{ width: "80px", borderRadius: "50%", }} />
                             </> : <>
-                                    <img src={"http://localhost:4000/users/image/" + this.state.user.avatar} style={{ width: "80px", borderRadius: "50%", }} />
+                                    <img src={"http://localhost:4000/users/image/" + this.state.user.avatar} style={{ width: "80px", height:"80px", borderRadius: "50%", }} />
                                 </>}
 
                         </div>
                         <div className="p-3">
                             <p style={{ fontSize: "20px", fontWeight: "bold" }}>{this.state.user.name}</p>
-                            <span style={{ fontSize: "13px" }}><strong>0</strong> Người theo dõi</span>
-                            <span style={{ fontSize: "13px", marginLeft: "12px" }}><strong>1</strong> Đang theo dõi</span>
+                            <span style={{ fontSize: "13px" }}><strong>{following}</strong> Người theo dõi</span>
+                            <span style={{ fontSize: "13px", marginLeft: "12px" }}><strong>{followers}</strong> Đang theo dõi</span>
                             <button onClick={this.toggleModalEditVisible} style={{ borderRadius: "5px", marginTop: "10px", fontSize: "13px" }}>Chỉnh sửa thông tin cá nhân</button>
                         </div>
                     </div>
@@ -102,6 +107,23 @@ class Profile extends Component {
                                     })}
 
                                 </>}
+                                </>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div className="follow-post" style={{ backgroundColor: "rgba(0,0,0,0.1", marginTop: "15px" }}>
+                    <p className="p-2"><strong>Bài đăng theo dõi</strong></p>
+                    <div className="container">
+                        <div className="row">
+                            {!this.state.user.followPosts ? <>
+                                <div className=""><span className="p-2">Bạn chưa theo dõi bài đăng nào</span>
+                                    <span className="p-2">Bạn có muốn<a href="/filter" style={{ color: "#fc9807" }}>khám phá ngay?</a></span>
+                                </div>
+                            </> : <>
+                                    {this.state.user.followPosts.map((post, i) => {
+                                        return <PostUser onFollow={this.props.onFollow} onUnfollow={this.props.onUnfollow} post={post} key={i} listFollow={this.props.listFollowing} />
+                                    })}
                                 </>
                             }
                         </div>

@@ -126,7 +126,7 @@ class CreatePost extends Component {
             // console.log("res: ", response.data)
             if (response.status === 201) {
                 this.reset();
-                alert("created!")
+                alert("Bài đăng đã được tạo. Vui lòng chờ kiểm duyệt.")
                 window.location.href = "profile"
             }
         }
@@ -159,7 +159,7 @@ class CreatePost extends Component {
                 <>
                     {this.state.user.length !== 0 && <>  {(!this.state.user.address || !this.state.user.phone) && <Modal isOpen={this.state.modal} toggle={this.toggleEdit}>
                         <ModalHeader toggle={this.toggleEdit}>Cập nhật thông tin</ModalHeader>
-                        <ModalBody>Bạn cần điền đầy đủ thông tin để có thể đăng bài.</ModalBody>
+                        <ModalBody>Bạn cần điền đầy đủ thông tin cá nhân để có thể đăng bài.</ModalBody>
                         <ModalFooter>
                             <Button color="primary" href="/profile">Edit</Button>{' '}
                             <Button color="secondary" onClick={this.toggleEdit}>Cancel</Button>
