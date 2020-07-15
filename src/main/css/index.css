@@ -1,0 +1,111 @@
+.main-container {
+    margin-right: 20%;
+    margin-left: 20%;
+    font-size: 12px;
+    font-weight: 400;
+    margin-top: 10px;
+}
+
+.main {
+    background-color: rgb(244, 244, 244);
+}
+
+.list-item-category {
+    height: 120px;
+    margin-right: 8px;
+    border-radius: 3px;
+    margin-left: 8px;
+    margin-top: 10px;
+}
+
+.list-item-category a {
+    background-color: white;
+    color: black;
+    margin-top: 90px;
+    font-weight: bold;
+    border-radius: 5px;
+    height: 20px;
+    text-align: center;
+    width: inherit;
+}
+
+.list-category {
+    height: 310px;
+    background-color: white;
+}
+
+.image {
+    background-image: url("../images/149213784683955-f8_07.jpg");
+    background-position: center;
+}
+
+.image-2 {
+    background-image: url("../images/mua-ban-thanh-ly-thiet-bi-dien-tu-dien-gia-dung-gia-re-tphcm-nguonthanhly.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.image-3 {
+    background-image: url("../images/13-ly-do-nen-tu-choi-thuc-an-nhanh-1-1562631798-372-width500height329.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.image-4 {
+    background-image: url("../images/đồ-dùng-mang-theo-cắm-trại.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.image-5 {
+    background-image: url("../images/ban-ghe-go-bv.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.image-6 {
+    background-image: url("../images/shop-ban-thoi-trang-nam-cong-so.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.image-7 {
+    background-image: url("../images/Top-9-Cửa-hàng-bán-dụng-cụ-thể-thao-uy-tín-nhất-ở-Hà-Nội.png");
+    background-position: center;
+    background-size: cover;
+    
+}
+
+.image-8 {
+    background-image: url("../images/sach.jpg");
+    background-position: center;
+    background-size: cover;
+}
+
+.btn-main{
+    margin-left: 350px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 200px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none 
+}
+
+.btn-main:hover {
+    background-color: blue;
+    color: white;
+}
+
+.notification {
+    width: 400px;
+    background-color: white;
+    position: absolute;
+    z-index: 1;
+    box-shadow: 2px 2px 10px 0px #aaaaaa;
+}
+
+.notification-item {
+    border-bottom: 0.2px solid #aaaaaa;
+}
+
