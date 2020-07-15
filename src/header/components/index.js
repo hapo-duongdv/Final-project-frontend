@@ -76,6 +76,11 @@ class Header extends Component {
             this.newNotification2(response)
         });
 
+        this.socket.on('newNotification-isBought', (response) => {
+            //lắng nghe khi có tin nhắn mới  
+            this.newNotificationIsBought(response)
+        });
+
         this.socket.on('user-connected', (res) => { alert(`${res.user} connected!`) });
         this.socket.on('user-disconnected', (res) => { alert(`${res.user} disconnected!`) });
     }
@@ -112,6 +117,17 @@ class Header extends Component {
             })
         }
     }
+    
+    newNotificationIsBought(value) {
+        if (value) {
+            this.state.newNotification.push({
+                sender: value.sender,
+                receiver: value.receiver,
+                notification: "Bài đăng sản phẩm " + value.posts + " của " + value.sender + " đã được bán"
+            })
+        }
+    }
+
 
     newNotification2(value) {
         if (value) {
@@ -151,7 +167,7 @@ class Header extends Component {
                             {this.state.isOpen && <div className="notification">
                                 <div style={{ borderBottom: "0.2px solid #aaaaaa", textAlign: "center", height: "35px", marginTop: "10px" }}>
                                     <span style={{ fontSize: "18px", fontWeight: "bold" }}>Thông báo</span>
-                                    
+
                                 </div>
                                 <div className="d-flex m-2">
                                     <img style={{ width: "50px", height: "50px" }} src={avatarTOT} />

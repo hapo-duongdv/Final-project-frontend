@@ -52,7 +52,7 @@ export default class PostItem extends Component {
                 }
             }
             catch (err) {
-                alert("OK")
+                alert(err)
             }
             // window.location.href = "filter"
         }
@@ -83,6 +83,10 @@ export default class PostItem extends Component {
             alert(err)
         }
 
+    }
+
+    searchProfileUser = async (id) => {
+        window.location.href = `/profileUser?q=${id}`
     }
 
 
@@ -133,9 +137,8 @@ export default class PostItem extends Component {
     }
 
     render() {
-        console.log(this.state.list_followingPost)
         const post = this.props.post;
-        const created_at = String(post.created_at).split('-')[0];
+        const created_at = String(post.created_at).slice(0, 10);
         var cost = this.props.post.cost
         while (/(\d+)(\d{3})/.test(cost.toString())) {
             cost = cost.toString().replace(/(\d+)(\d{3})/, '$1' + '.' + '$2');
@@ -161,7 +164,7 @@ export default class PostItem extends Component {
                             </div>
                             <div className="d-flex pt-4">
                                 <FontAwesomeIcon icon={faUser} size="1.5em" color="blue" />
-                                <CardText className="ml-1 pr-2" style={{ fontSize: "15px", borderRight: "0.2px solid grey" }}>{post.author.username}</CardText>
+                                <CardText onClick={() => this.searchProfileUser(post.author.id)} className="ml-1 pr-2" style={{ fontSize: "15px", borderRight: "0.2px solid grey" }}>{post.author.username}</CardText>
                                 <CardText className="ml-2 pr-2" style={{ fontSize: "15px", borderRight: "0.2px solid grey" }}>{post.address}</CardText>
                                 {post.isBought === false
                                     ? <CardText href="#" className="ml-2 p-0 rounded" style={{ fontSize: 15, color: "blue" }}>còn hàng</CardText>

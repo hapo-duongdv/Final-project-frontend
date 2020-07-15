@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Form, Row, Col, FormGroup, Label, Input, Button, Modal } from 'reactstrap'
+import { Form, Row, Col, FormGroup, Label, Input, Button, Modal } from 'reactstrap';
+import io from 'socket.io-client';
 
 export default class EditPost extends Component {
     constructor(props) {
@@ -103,6 +104,12 @@ export default class EditPost extends Component {
             const response = await axios.put('http://localhost:4000/posts/' + this.props.post.id, obj,
                 { headers: { 'Authorization': AuthStr } }
             )
+            var followers = response.data.followers;
+            if (response.data.isBought) {
+                if (followers !== null) {
+                    this.socket.emit("notification-isBought", { sender: this.props.author.username, receiver: followers.username, posts: this.props.post.title })
+                }
+            }
             if (response.status === 200) {
                 alert("Post updated!")
             }
@@ -111,7 +118,7 @@ export default class EditPost extends Component {
         }
 
         this.toggleLoading();
-        window.location.href = "profile"
+        // window.location.href = "profile"
     }
 
     componentDidMount() {

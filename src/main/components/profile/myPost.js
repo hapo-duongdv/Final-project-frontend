@@ -40,7 +40,6 @@ export default class MyPost extends Component {
             )
             if (response.status === 200) {
                 alert("deleted!")
-                // this.props.history.push('/profile')
             }
         }
         catch (error) {
@@ -108,6 +107,7 @@ export default class MyPost extends Component {
                         visible={this.state.modalEditPostVisible}
                         onToggle={this.toggleModalEditPostVisible}
                         key={this.props.post.id}
+                        author={this.props.author}
                         post={this.props.post} />
                     <ModalShow
                         visible={this.state.modalShowVisible}
